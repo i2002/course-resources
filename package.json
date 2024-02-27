@@ -1,0 +1,48 @@
+{
+  "name": "course-resources",
+  "version": "0.1.0",
+  "description": "Wordpress plugin for document management interface",
+  "main": "index.js",
+  "scripts": {
+    "wp-env": "wp-env",
+    "build": "wp-scripts build && npm run tailwind:build-frontend && npm run tailwind:build-backend",
+    "start": "wp-scripts start",
+    "tailwind:build-frontend": "npx tailwindcss -i ./src/frontend.css -o ./build/frontend.css",
+    "tailwind:build-backend": "npx tailwindcss -i ./src/backend.css -o ./build/backend.css",
+    "tailwind:watch": "npm run tailwind:build-backend -- --watch & npm run tailwind:build-frontend -- --watch",
+    "lint:js": "wp-scripts lint-js",
+    "composer": "wp-env run cli --env-cwd=wp-content/plugins/materiale-curs-wordpress composer",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tudor Butufei",
+  "license": "",
+  "devDependencies": {
+    "@heroicons/react": "^2.1.1",
+    "@types/react": "^18.2.47",
+    "@wordpress/env": "^9.0.0",
+    "@wordpress/scripts": "^26.19.0",
+    "autoprefixer": "^10.4.17",
+    "css-loader": "^6.9.1",
+    "mini-css-extract-plugin": "^2.7.7",
+    "postcss": "^8.4.33",
+    "postcss-import": "^16.0.0",
+    "postcss-loader": "^8.0.0",
+    "postcss-preset-env": "^9.3.0",
+    "prettier": "^3.2.2",
+    "style-loader": "^3.3.4",
+    "tailwindcss": "^3.4.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "@headlessui/tailwindcss": "^0.2.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@wordpress/api-fetch": "^6.45.0",
+    "@wordpress/element": "^5.25.0",
+    "@wordpress/url": "^3.50.0",
+    "pdfjs-dist": "^4.0.379",
+    "react-router-dom": "^6.22.1"
+  }
+}

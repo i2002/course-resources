@@ -1,0 +1,52 @@
+@import './tailwind-reset.css';
+@import './forms-reset.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	/* Form components */
+	.react-root,
+	#headlessui-portal-root {
+		.tw-form-label {
+			@apply tw-mb-1 tw-block tw-text-sm tw-font-medium tw-text-slate-700 !important;
+		}
+	
+		.tw-form-input {
+			@apply tw-block tw-w-full tw-rounded-md tw-border-slate-300 tw-shadow-sm focus:tw-border-teal-400 focus:tw-ring focus:tw-ring-teal-300 focus:tw-ring-opacity-50 disabled:tw-cursor-not-allowed disabled:tw-bg-slate-50 disabled:tw-text-slate-500 !important;
+		}
+	
+		.tw-form-input-error {
+			@apply tw-block tw-w-full tw-rounded-md tw-border-red-300 tw-shadow-sm focus:tw-border-red-300 focus:tw-ring focus:tw-ring-red-200 focus:tw-ring-opacity-50 disabled:tw-cursor-not-allowed disabled:tw-bg-gray-50 disabled:tw-text-gray-500 !important;
+		}
+	
+		.tw-form-textarea {
+			@apply tw-block tw-w-full tw-rounded-md tw-border-slate-300 tw-shadow-sm focus:tw-border-teal-400 focus:tw-ring focus:tw-ring-teal-300 focus:tw-ring-opacity-50 disabled:tw-cursor-not-allowed disabled:tw-bg-slate-50 !important;
+		}
+	
+		.tw-form-checkbox {
+			@apply tw-h-4 tw-w-4 tw-rounded tw-border-slate-300 tw-text-teal-600 tw-shadow-sm focus:tw-border-teal-300 focus:tw-ring focus:tw-ring-teal-200 focus:tw-ring-opacity-50 focus:tw-ring-offset-0 disabled:tw-cursor-not-allowed disabled:tw-text-slate-400 !important;
+		}
+	
+		.tw-form-checkbox:checked::before {
+			content: none !important;
+		}
+	
+		.tw-button-primary {
+			@apply tw-rounded-lg tw-border tw-border-primary-500 tw-bg-primary-500 tw-px-4 tw-py-1.5 tw-text-center tw-text-sm tw-font-medium tw-text-white tw-shadow-sm tw-transition-all hover:tw-border-primary-700 hover:tw-bg-primary-700 focus:tw-ring focus:tw-ring-primary-200 disabled:tw-cursor-not-allowed disabled:tw-border-primary-300 disabled:tw-bg-primary-300;
+		}
+	
+		.tw-button-neutral {
+			@apply tw-rounded-lg tw-border tw-border-gray-300 tw-bg-white tw-px-4 tw-py-1.5 tw-text-center tw-text-sm tw-font-medium tw-text-gray-700 tw-shadow-sm tw-transition-all hover:tw-bg-gray-100 focus:tw-ring focus:tw-ring-gray-100 disabled:tw-cursor-not-allowed disabled:tw-border-gray-100 disabled:tw-bg-gray-50 disabled:tw-text-gray-400 !important;
+		}
+	
+		.tw-button-danger {
+			@apply tw-rounded-lg tw-border tw-border-red-500 tw-bg-red-500 tw-px-4 tw-py-1.5 tw-text-center tw-text-sm tw-font-medium tw-text-white tw-shadow-sm tw-transition-all hover:tw-border-red-700 hover:tw-bg-red-700 focus:tw-ring focus:tw-ring-red-200 disabled:tw-cursor-not-allowed disabled:tw-border-red-300 disabled:tw-bg-red-300 !important;
+		}
+
+		.pdfViewer .page {
+			border: var(--page-border) !important;
+		}
+	}
+}

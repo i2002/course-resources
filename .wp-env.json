@@ -1,0 +1,9 @@
+{
+    "core": null,
+    "plugins": [
+        "."
+    ],
+    "config": {
+        "WPLANG": "ro_RO"
+    }
+}

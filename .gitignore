@@ -1,0 +1,6 @@
+# packages
+node_modules/
+vendor/
+
+# build
+build/

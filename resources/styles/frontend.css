@@ -1,0 +1,5 @@
+@import './base.css';
+
+.react-root {
+	max-width: unset !important;
+}

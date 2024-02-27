@@ -1,0 +1,14 @@
+{
+    "configurations": [
+		{
+			"name": "Listen for XDebug",
+			"type": "php",
+			"request": "launch",
+			"port": 9003,
+			"pathMappings": {
+				"/var/www/html/wp-content/plugins/materiale-curs-wordpress": "${workspaceFolder}/",
+				"/var/www/html/": "/usr/share/webapps/wordpress"
+			},
+		}
+    ]
+}
