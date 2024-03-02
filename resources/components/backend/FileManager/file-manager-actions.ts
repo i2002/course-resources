@@ -37,7 +37,7 @@ export const renameResourceAction = async (
 		return resourceMapFolderTax(folder);
 	} else if (renamed.type === 'file') {
 		const file = await apiFetch<wp.Media>({
-			path: `/wp/v2/media/${renamed.id}`,
+			path: `/wp/v2/cr-file/${renamed.id}`,
 			method: 'POST',
 			data: {
 				title: newName,
@@ -78,7 +78,7 @@ export const addFolderAction = async (
 			slug: `${courseId}_${slug}`,
 			parent: resource,
 			meta: {
-				course: courseId,
+				cr_folder_course: courseId,
 			},
 		},
 	});
@@ -87,62 +87,37 @@ export const addFolderAction = async (
 };
 
 /**
- * Insert attachments to folder.
+ * Upload selected files.
  *
- * @param attachments list of attachments to be added
- * @param resource    parent folder (0 for root folder)
- * @param courseId    course id
- * @return data of the new files
+ * @param files    array of file data and selected title
+ * @param resource parent folder (0 for root folder)
+ * @param courseId course id
+ * @return data of the created file resources
  */
-export const attachMediaAction = async (
-	attachments: Array<{ id: number; name: string }>,
+export const uploadFilesAction = async (
+	files: { name: string; file: File }[],
 	resource: number,
 	courseId: number
 ) => {
-	const attachedFiles: Resource[] = [];
-	for (const attachment of attachments) {
-		const res = await apiFetch<wp.Media>({
+	const uploadedFiles = [];
+
+	for (const file of files) {
+		const formData = new FormData();
+		formData.append('file', file.file);
+		formData.append('course', String(courseId));
+		formData.append('parent', String(resource));
+		formData.append('title', file.name);
+
+		const newFile = await apiFetch<Resource>({
+			path: `/course-resources/v1/files`,
 			method: 'POST',
-			path: `/wp/v2/media/${attachment.id}`,
-			data: {
-				title: attachment.name,
-				post: courseId,
-				'cr-folder': resource !== 0 ? [resource] : [],
-			},
+			body: formData,
 		});
 
-		attachedFiles.push(resourceMapMedia(res));
+		uploadedFiles.push(newFile);
 	}
 
-	return attachedFiles;
-};
-
-export const uploadFile = async (
-	files: FileList,
-	resource: number,
-	courseId: number,
-	state: FolderData
-) => {
-	const formData = new FormData();
-	formData.append('file', files[0]);
-	formData.append('courseId', String(courseId));
-	formData.append('parentId', String(resource) ?? '');
-
-	if (state.children.find((res) => res.name === files[0].name)) {
-		throw new Error('Numele fișierului selectat nu este unic.');
-	}
-
-	const res = await fetch('/api/upload', {
-		method: 'POST',
-		body: formData,
-	});
-
-	const data = await res.json();
-	if (data.error !== undefined) {
-		throw new Error(data.error);
-	}
-
-	return data.data;
+	return uploadedFiles;
 };
 
 /**
@@ -172,7 +147,7 @@ export const moveSelectionAction = async (
 		} else if (res.type === 'file') {
 			const file = await apiFetch<wp.Media>({
 				method: 'POST',
-				path: `/wp/v2/media/${res.id}`,
+				path: `/wp/v2/cr-file/${res.id}`,
 				data: {
 					title: res.name,
 					'cr-folder': resource !== 0 ? [resource] : [],
@@ -190,17 +165,11 @@ export const moveSelectionAction = async (
  * Delete selection action.
  *
  * The selected files and folders are deleted recursivelly.
- * If deleteAttachments argument is true, the attachments in the deletion tree will be deleted.
- * If it is false, they will be unlinked from course but still remain in Media Library.
  *
- * @param selected          selected resources
- * @param deleteAttachments whether to delete attachments or unlink them
+ * @param selected selected resources
  * @return data of the deleted resources
  */
-export const deleteSelectionAction = async (
-	selected: Resource[],
-	deleteAttachments: boolean
-) => {
+export const deleteSelectionAction = async (selected: Resource[]) => {
 	const removedResources: Resource[] = [];
 	for (const res of selected) {
 		if (res.type === 'folder') {
@@ -212,7 +181,6 @@ export const deleteSelectionAction = async (
 				path: `/wp/v2/cr-folder/${res.id}`,
 				data: {
 					force: true,
-					deleteAttachments,
 				},
 			});
 
@@ -220,31 +188,20 @@ export const deleteSelectionAction = async (
 				removedResources.push(resourceMapFolderTax(response.previous));
 			}
 		} else if (res.type === 'file') {
-			let file: wp.Media | null = null;
-			if (deleteAttachments) {
-				const response = await apiFetch<{
-					deleted: boolean;
-					previous: wp.Media;
-				}>({
-					method: 'DELETE',
-					path: `/wp/v2/media/${res.id}`,
-					data: {
-						force: true,
-					},
-				});
+			const response = await apiFetch<{
+				deleted: boolean;
+				previous: wp.Media;
+			}>({
+				method: 'DELETE',
+				path: `/wp/v2/cr-file/${res.id}`,
+				data: {
+					force: true,
+				},
+			});
 
-				if (response.deleted) {
-					file = response.previous;
-				}
-			} else {
-				file = await apiFetch<wp.Media>({
-					method: 'POST',
-					path: `/wp/v2/media/${res.id}`,
-					data: {
-						post: 0,
-						'cr-folder': [],
-					},
-				});
+			let file: wp.Media | null = null;
+			if (response.deleted) {
+				file = response.previous;
 			}
 
 			if (file) {
@@ -270,7 +227,7 @@ function resourceMapFolderTax(folder: wp.FolderTax): Resource {
 		_count: {
 			children: folder.count,
 		},
-		updatedAt: folder.meta.updatedAt * 1000,
+		updatedAt: folder.meta.cr_folder_updated_at * 1000,
 	};
 }
 
@@ -287,7 +244,7 @@ function resourceMapMedia(file: wp.Media): Resource {
 		name: file.title.raw,
 		fileData: {
 			mimeType: file.mime_type,
-			size: file.media_details.filesize,
+			size: file.meta.cr_file_size,
 			path: file.source_url,
 		},
 		updatedAt: file.modified_gmt,

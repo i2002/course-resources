@@ -23,7 +23,7 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			path: `/wp/v2/cr-course/${courseId}`,
 		})
 			.then((course) => {
-				setEmails(course.meta.students);
+				setEmails(course.meta.cr_course_students);
 			})
 			.catch(() => setError('Eroare la încărcare date.'))
 			.finally(() => setLoading(false));
@@ -37,11 +37,11 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			method: 'POST',
 			data: {
 				meta: {
-					students: newEmails,
+					cr_course_students: newEmails,
 				},
 			},
 		})
-			.then((course) => setEmails(course.meta.students))
+			.then((course) => setEmails(course.meta.cr_course_students))
 			.catch(() => setError('Eroare la actualizare studenți.'))
 			.finally(() => setLoading(false));
 	};

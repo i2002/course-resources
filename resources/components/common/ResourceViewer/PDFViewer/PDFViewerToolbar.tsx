@@ -5,14 +5,6 @@ import {
 import { useContext } from '@wordpress/element';
 import { PDFViewerContext } from './PDFViewerContext';
 
-interface Props {
-	currentPage: number;
-	numPages: number;
-	scale: number;
-	setScale: React.Dispatch<React.SetStateAction<number>>;
-	scrollToPage: (page: number) => any;
-}
-
 export default function PDFViewerToolbar() {
 	const {
 		state: { currentPage, numPages, scale },

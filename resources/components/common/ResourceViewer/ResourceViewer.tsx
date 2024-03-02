@@ -1,18 +1,18 @@
 import { useEffect } from '@wordpress/element';
-import wp from '../../../lib/wp-types';
+import type { Resource } from '../../../lib/file-data-types';
 import ImageViewer from './ImageViewer';
 import PDFViewer from './PDFViewer';
 import ResourceViewerHeader from './ResourceViewerHeader';
 import TextViewer from './TextViewer';
 
 type Props = {
-	fileData: wp.Media;
+	fileData: Resource;
 	onClose: () => void;
 };
 
 export default function ResourceViewer({ fileData, onClose }: Props) {
-	const name = fileData.title.rendered;
-	const resUrl = fileData.source_url;
+	const name = fileData.name;
+	const resUrl = fileData.fileData?.path ?? '';
 
 	useEffect(() => {
 		// prevent outer scroll when modal active
@@ -25,15 +25,15 @@ export default function ResourceViewer({ fileData, onClose }: Props) {
 		onClose();
 	};
 
-	if (fileData.mime_type === 'application/pdf') {
+	if (fileData.fileData?.mimeType === 'application/pdf') {
 		return (
 			<PDFViewer name={name} resUrl={resUrl} onClose={onCloseHandler} />
 		);
-	} else if (fileData.mime_type.startsWith('image/')) {
+	} else if (fileData.fileData?.mimeType.startsWith('image/')) {
 		return (
 			<ImageViewer name={name} resUrl={resUrl} onClose={onCloseHandler} />
 		);
-	} else if (fileData.mime_type.startsWith('text/')) {
+	} else if (fileData.fileData?.mimeType.startsWith('text/')) {
 		return (
 			<TextViewer name={name} resUrl={resUrl} onClose={onCloseHandler} />
 		);

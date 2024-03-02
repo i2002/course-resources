@@ -36,23 +36,6 @@ const initialState: LoginContextState = {
 
 const getErrorMessage = (errorCode: string) => {
 	switch (errorCode) {
-		// case 'AccessDenied':
-		// 	return 'Adresa de email nu este înregistrată.';
-		// case 'Verification':
-		// 	return 'Link-ul de autentificare a expirat sau a fost folosit deja.';
-		// case 'CredentialsSignin':
-		// 	return 'Date de autentificare incorecte';
-		// case 'OAuthAccountNotLinked':
-		// 	return 'Există deja un cont creat cu aceeași adresă de email';
-		// case 'EmailSignin':
-		// 	return 'Eroare la trimiterea email-ului de autentificare';
-		// case 'OAuthSignin':
-		// case 'OAuthCallback':
-		// case 'OAuthCreateAccount':
-		// case 'EmailCreateAccount':
-		// case 'Callback':
-		// case 'Configuration':
-		// case 'Default':
 		case 'cr_auth_email_timeout':
 			return 'Un email a fost trimis deja la adresa specificată. Dacă nu ați primit email-ul puteți reîncerca peste un minut.';
 		case 'cr_auth_email_error':

@@ -1,5 +1,4 @@
 import type { Resource } from '../../../lib/file-data-types';
-import type wp from '../../../lib/wp-types';
 
 /**
  * Add resource to folder resources array.
@@ -107,30 +106,30 @@ export function resourceComparator(resA: Resource, resB: Resource) {
 }
 
 /**
- * Ensure attachment names are unique within parent folder.
+ * Ensure uploaded files names are unique within parent folder.
  *
- * @param attachments attachments array from WP media frame
- * @param resources   folder resources array
- * @return array of ids and unique names for the new attachments
+ * @param files     uploaded files
+ * @param resources folder resources array
+ * @return array of unique names and uploaded files info
  */
-export function prepareAttachmentData(
-	attachments: wp.Attachment[],
+export function prepareUploadedFilesData(
+	files: FileList,
 	resources: Resource[]
 ) {
 	const nameList = resources.map((res) => res.name);
-	return attachments.map((attachment) => {
-		let name = attachment.title;
-		if (fileExt(attachment.filename) !== fileExt(attachment.title)) {
-			name += fileExt(attachment.filename);
-		}
+	const result = [];
+
+	for (let i = 0; i < files.length; i++) {
+		let name = files[i].name;
 		name = uniqueFilename(nameList, name);
 		nameList.push(name);
-
-		return {
-			id: attachment.id,
+		result.push({
 			name,
-		};
-	});
+			file: files[i],
+		});
+	}
+
+	return result;
 }
 
 /**

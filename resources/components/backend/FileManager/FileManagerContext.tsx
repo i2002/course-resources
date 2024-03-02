@@ -7,20 +7,19 @@ import {
 	useState,
 } from '@wordpress/element';
 import type { Resource, ResourcePath } from '../../../lib/file-data-types';
-import type wp from '../../../lib/wp-types';
 import {
 	addFolderAction,
-	attachMediaAction,
 	deleteSelectionAction,
 	getFolderData,
 	moveSelectionAction,
 	renameResourceAction,
+	uploadFilesAction,
 } from './file-manager-actions';
 import type { FileManagerContextType } from './file-manager-types';
 import {
 	addResource,
-	prepareAttachmentData,
 	prepareMovingData,
+	prepareUploadedFilesData,
 	removeResource,
 	replaceResource,
 	resourceComparator,
@@ -147,16 +146,16 @@ export const FileManagerProvider = ({ children, courseId }: ProviderProps) => {
 		[parent, courseId, resources]
 	);
 
-	const attachMedia = useCallback(
-		(attachments: wp.Attachment[]) =>
-			attachMediaAction(
-				prepareAttachmentData(attachments, resources),
+	const uploadFiles = useCallback(
+		(files: FileList) =>
+			uploadFilesAction(
+				prepareUploadedFilesData(files, resources),
 				parent,
 				courseId
-			).then((attachedFiles) =>
+			).then((uploadedFiles) =>
 				resourcesDispatch({
 					type: 'add',
-					resources: attachedFiles,
+					resources: uploadedFiles,
 				})
 			),
 		[resources, parent, courseId]
@@ -192,19 +191,20 @@ export const FileManagerProvider = ({ children, courseId }: ProviderProps) => {
 					oldResource: renamed,
 					newResource,
 				});
+
+				setSelected([]);
 			}
 		},
 		[resources]
 	);
 
 	const deleteSelection = useCallback(
-		(forceDelete: boolean) =>
-			deleteSelectionAction(selected, forceDelete).then(
-				(removedResources) =>
-					resourcesDispatch({
-						type: 'remove',
-						resources: removedResources,
-					})
+		() =>
+			deleteSelectionAction(selected).then((removedResources) =>
+				resourcesDispatch({
+					type: 'remove',
+					resources: removedResources,
+				})
 			),
 		[selected]
 	);
@@ -226,18 +226,14 @@ export const FileManagerProvider = ({ children, courseId }: ProviderProps) => {
 				setSelected,
 				dismissError: () => setError(undefined),
 				addFolder: (name) => loadData(addFolder(name)),
-				attachMedia: (attachments) =>
-					loadData(attachMedia(attachments)),
 				refresh: loadParent,
 				startMoveSelection: () => setMoving(selected),
 				cancelMoveSelection: () => setMoving([]),
 				endMoveSelection: () => loadData(moveSelection()),
-				// uploadFile: (files: FileList) =>
-				// setStateAsync(uploadFile(files, resource, courseId, state)),
+				uploadFiles: (files: FileList) => loadData(uploadFiles(files)),
 				renameResource: (newName, renamed) =>
 					loadData(renameResource(newName, renamed)),
-				deleteSelection: (forceDelete) =>
-					loadData(deleteSelection(forceDelete)),
+				deleteSelection: () => loadData(deleteSelection()),
 			}}
 		>
 			{children}

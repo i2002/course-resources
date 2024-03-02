@@ -1,15 +1,15 @@
 <?php
 
 define( 'CR_COURSE_TYPE', 'cr-course' );
-define( 'CR_COURSE_STUDENTS_META', 'students' );
+define( 'CR_COURSE_STUDENTS_META', 'cr_course_students' );
 define( 'CR_FILE_TYPE', 'cr-file' );
 define( 'CR_FILE_MIME_META', 'cr_file_mime_type' );
 define( 'CR_FILE_SIZE_META', 'cr_file_size' );
 define( 'CR_FILE_NAME_META', 'cr_file_name' );
 define( 'CR_FILES_FOLDER', 'cr_files' );
 define( 'CR_FOLDER_TAX', 'cr-folder' );
-define( 'CR_FOLDER_COURSE_META', 'course' );
-define( 'CR_FOLDER_UPDATED_META', 'updatedAt' );
+define( 'CR_FOLDER_COURSE_META', 'cr_folder_course' );
+define( 'CR_FOLDER_UPDATED_META', 'cr_folder_updated_at' );
 
 /**
  * Register plugin custom post types.
@@ -18,11 +18,6 @@ define( 'CR_FOLDER_UPDATED_META', 'updatedAt' );
  */
 function cr_register_custom_types()
 {
-	// $capabilities = get_post_type_capabilities( CR_COURSE_TYPE );
-
-    // Change the default capability for viewing the post type
-    // $capabilities->read_post = 'read_' . CR_COURSE_TYPE . 's';
-
 	// course
 	register_post_type(
 		CR_COURSE_TYPE,
@@ -55,11 +50,7 @@ function cr_register_custom_types()
 			'show_ui'              => true,
 			'show_in_menu'         => CR_ADMIN_MENU,
 			'supports'             => array( 'title', 'custom-fields' ),
-			'rewrite'              => array( 'slug' => 'course' ),
-			// 'show_in_rest'         => true,
 			'show_in_rest'         => current_user_can( 'manage_options' ),
-			'has_archive'          => 'courses',
-			'query_var'            => 'course',
 			'register_meta_box_cb' => 'cr_course_register_metabox',
 		)
 	);
@@ -74,7 +65,7 @@ function cr_register_custom_types()
 	// file
 	register_post_type( CR_FILE_TYPE, array(
 		'public'       => false,
-		'supports'     => array( 'title'),
+		'supports'     => array( 'title', 'custom-fields' ),
 		'show_in_rest' => current_user_can( 'manage_options' )
 	) );
 
@@ -88,7 +79,6 @@ function cr_register_custom_types()
 	register_post_meta( CR_FILE_TYPE, CR_FILE_NAME_META, array(
 		'type'              => 'string',
 		'single'            => true,
-		'show_in_rest'      => true,
 		'revisions_enabled' => false
 	) );
 
@@ -99,6 +89,9 @@ function cr_register_custom_types()
 		'revisions_enabled' => false,
 		'default'           => 0
 	) );
+
+	// - register file endpoint
+	add_rewrite_rule( '^cr_file/([^/]+)/?', 'index.php?cr_file=$matches[1]', 'top' );
 
 	// folder
 	register_taxonomy( CR_FOLDER_TAX, CR_FILE_TYPE, array(
@@ -139,31 +132,57 @@ function cr_register_custom_types()
 	);
 }
 
-function wpse237762_set_404() {
-	if ( is_attachment() && ! current_user_can( 'manage_options' ) ) {
-		global $wp_query;
-		$wp_query->set_404();
-		status_header(404);
+/**
+ * Delete its files and folders when deleting a course.
+ *
+ * @since 0.1.0
+ *
+ * @param int $course_id
+ * @param WP_Post $course
+ */
+function cr_before_delete_course( $course_id, $course )
+{
+	if ( $course->post_type !== CR_COURSE_TYPE ) {
+		return;
+	}
+
+	// delete top level folders
+	$folders = cr_get_child_folders( $course, 0 );
+	foreach ( $folders as $folder ) {
+		wp_delete_term( $folder->term_id, CR_FOLDER_TAX );
+	}
+
+	// delete files in root folder
+	$files = cr_get_child_files( $course, 0 );
+	foreach ( $files as $file ) {
+		wp_delete_post( $file->ID, true );
 	}
 }
 
-// This will show 404 on the attachment page
-add_filter('template_redirect', 'wpse237762_set_404');
-
-function cr_file_endpoint()
+/**
+ * Get upload path relative to uploads directory.
+ *
+ * @since 0.1.0
+ *
+ * @param int $course_id the id of the parent course
+ * @return string
+ */
+function cr_file_get_upload_path( $course_id )
 {
-	add_rewrite_rule( '^cr_file/([^/]+)/?', 'index.php?cr_file=$matches[1]', 'top' );
+	return CR_FILES_FOLDER . '/' . $course_id;
 }
-add_action( 'init', 'cr_file_endpoint' );
 
-function cr_file_query_var( $vars )
-{
-	$vars[] = 'cr_file';
-	return $vars;
-}
-add_filter( 'query_vars', 'cr_file_query_var' );
-
-function cr_get_file_dir( $file_id, $create = false )
+/**
+ * Get server path of a file.
+ *
+ * Returns the physical path or null if errors.
+ *
+ * @since 0.1.0
+ *
+ * @param int $file_id
+ * @return string|null
+ */
+function cr_file_get_path( $file_id )
 {
 	$file = get_post( $file_id );
 
@@ -177,41 +196,71 @@ function cr_get_file_dir( $file_id, $create = false )
 		return null;
 	}
 
-	$cr_file_dir = $upload_dir['basedir'] . '/' . $file->post_parent;
+	$file_dir = $upload_dir['basedir'] . '/' . cr_file_get_upload_path( $file->post_parent );
 
-	if ( ! file_exists($cr_file_dir) ) {
-		if ( ! $create ) {
-			return null;
-		}
+	$file_name = get_post_meta( $file_id, CR_FILE_NAME_META, true );
 
-		$ret = wp_mkdir_p( $cr_file_dir );
-
-		if ( ! $ret ) {
-			return null;
-		}
+	if ( empty( $file_name ) ) {
+		return null;
 	}
 
-	return $cr_file_dir;
+	return $file_dir . '/' . $file_name;
 }
 
-function cr_get_file_path( $file_id )
+/**
+ * Get URL of a file.
+ *
+ * @since 0.1.0
+ *
+ * @param int $file_id
+ * @return string
+ */
+function cr_file_get_url( $file_id )
 {
-	$file_dir = cr_get_file_dir( $file_id );
-
-	if ( ! $file_dir ) {
-		return null;
-	}
-
-	$filename = get_post_meta( $file_id, CR_FILE_NAME_META );
-
-	if ( empty( $filename ) ) {
-		return null;
-	}
-
-	return $file_dir . '/' . $filename;
+	return home_url( "?cr_file=$file_id" );
 }
 
-function cr_file_handler2()
+/**
+ * Delete physical file associated with file post type.
+ *
+ * @since 0.1.0
+ *
+ * @param int     $file_id
+ * @param WP_Post $file
+ */
+function cr_before_delete_file( $file_id, $file )
+{
+	if ( $file->post_type !== CR_FILE_TYPE ) {
+		return;
+	}
+
+	$upload_dir = wp_get_upload_dir( null, false );
+	$file_path = cr_file_get_path( $file_id );
+	$file_dir = $upload_dir['basedir'] . '/' . cr_file_get_upload_path( $file->post_parent );
+
+	wp_delete_file_from_directory( $file_path, $file_dir );
+}
+
+/**
+ * Register file query var.
+ *
+ * @since 0.1.0
+ *
+ * @param array $vars
+ * @return array
+ */
+function cr_file_query_var( $vars )
+{
+	$vars[] = 'cr_file';
+	return $vars;
+}
+
+/**
+ * Proxy file requests and check access permissions.
+ *
+ * @since 0.1.0
+ */
+function cr_file_handler()
 {
 	$file_id = get_query_var( 'cr_file', false );
 
@@ -221,6 +270,7 @@ function cr_file_handler2()
 
 	$file = get_post( (int) $file_id );
 
+	// not a valid file
 	if ( ! $file || $file->post_type !== CR_FILE_TYPE ) {
 		global $wp_query;
 		$wp_query->set_404();
@@ -228,6 +278,7 @@ function cr_file_handler2()
 		return;
 	}
 
+	// permit requests from admin interface
 	if ( ! current_user_can( 'manage_options' ) ) {
 		$email = cr_get_current_student();
 
@@ -241,7 +292,7 @@ function cr_file_handler2()
 		}
 	}
 
-	$file_path = cr_get_file_path( $file_id );
+	$file_path = cr_file_get_path( $file_id );
 
 	if ( ! file_exists( $file_path ) ) {
 		global $wp_query;
@@ -261,170 +312,29 @@ function cr_file_handler2()
 	exit;
 }
 
-function cr_file_handler()
-{
-	$attachment_id = get_query_var( 'cr_file', false );
-
-	if ( $attachment_id === false ) {
-		return;
-	}
-
-	$attachment = get_post( (int) $attachment_id );
-	$attachment_path = get_attached_file( (int) $attachment_id );
-
-	if ( ! $attachment ) {
-		global $wp_query;
-		$wp_query->set_404();
-		status_header( 404 );
-		return;
-	}
-
-	if ( ! current_user_can( 'manage_options' ) ) {
-		$email = cr_get_current_student();
-
-		$course_permission = cr_is_student_enrolled( $email, $attachment->post_parent );
-
-		if ( $course_permission === false ) {
-			global $wp_query;
-			$wp_query->set_404();
-			status_header( 404 );
-			return;
-		}
-	}
-
-	header( 'Content-Type: ' . $attachment->post_mime_type );
-	header( 'Content-Disposition: inline; filename="' . basename( $attachment_path ) . '"' );
-	header( 'Content-Description: File Transfer' );
-	header( 'Content-Transfer-Encoding: binary' );
-	header( 'Content-Length: ' . filesize( $attachment_path ) );
-
-	readfile( $attachment_path );
-	exit;
-}
-add_action( 'template_redirect', 'cr_file_handler' );
-
-
-function test2( $args, $request )
-{
-	$courses = get_posts( array(
-		'post_type' => CR_COURSE_TYPE,
-		'nopaging' => true,
-		'fields' => 'ids'
-	) );
-	$args['post_parent__not_in'] = $courses;
-
-	return $args;
-}
-
-add_filter( 'rest_attachment_query', 'test2', 10, 2);
-
-// function cr_attachment_names( $response, $attachment, $meta )
-// {
-// 	$response['filename'] = $response['title'];
-// 	return $response;
-// }
-
-// add_filter( 'wp_prepare_attachment_for_js', 'cr_attachment_names', 10, 3 );
-
 /**
+ * Modify htaccess rules to forbid direct access to files upload folder.
  *
- */
-function cr_rest_attachment_hide_path( $response, $post, $request )
-{
-	// $permission = cr_has_course_permission( $post->post_parent );
-	$parent = get_post( $post->parent );
-
-	if ( $parent && $parent->post_type === CR_COURSE_TYPE ) {
-		if ( isset( $response->data['guid'] ) ) {
-			$response->data['guid'] = array(
-				'rendered' => esc_html( home_url( "?cr_file=$post->ID") )
-			);
-		}
-
-		if ( isset( $response->data['link'] ) ) {
-			$response->data['link'] = array(
-				'rendered' => esc_html( home_url( "?cr_file=$post->ID") )
-			);
-		}
-	}
-
-	return $response;
-}
-
-add_filter( 'rest_prepare_attachment', 'cr_rest_attachment_hide_path', 10, 3 );
-
-/**
+ * @since 0.1.0
  *
+ * @param string $rules
+ * @return string
  */
-function cr_attachment_hide_path( $url, $attachment_id )
+function cr_file_htaccess_rules( $rules )
 {
-	// apply only on frontend
-	if ( current_user_can( 'manage_options' ) ) {
-		return $url;
-	}
+	$file_dir = 'wp-content/uploads/' . CR_FILES_FOLDER;
+	$file_rules = "
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{REQUEST_URI} ^/$file_dir
+RewriteRule .*$ - [F]
+</IfModule>
+	";
 
-	// apply only if attached to course
-	$attachment = get_post( $attachment_id );
+	$rules .= $file_rules;
 
-	if ( ! $attachment ) {
-		return $url;
-	}
-
-	$parent = get_post( $attachment->post_parent );
-
-	if ( $parent && $parent->post_type === CR_COURSE_TYPE ) {
-		$file_url = home_url( "?cr_file=$attachment_id");
-		return $file_url;
-	}
-
-	return $url;
+	return $rules;
 }
-
-add_filter( 'wp_get_attachment_url', 'cr_attachment_hide_path', 10, 2 );
-
-// function cr_randomize_filename( $filename, $filename_raw )
-// {
-// 	$name = bin2hex( random_bytes( 15 ) );
-// 	return $name;
-// }
-
-// add_filter( 'sanitize_file_name', 'cr_randomize_filename', 10, 2 );
-
-// add_filter('mod_rewrite_rules', 'custom_htaccess_rules');
-
-// function custom_htaccess_rules($rules) {
-//     // Add custom rules to restrict media access for non-logged-in users
-//     $custom_rules = "
-// # Custom rules added by plugin for restricting media access to logged-in users
-// <FilesMatch '\\.(jpg|jpeg|png|gif|pdf|doc|docx|zip|mp3|mp4|flv|wmv|avi)$'>
-//     Order deny,allow
-//     Deny from all
-//     # Allow logged-in users
-//     Allow from all
-//     # Require valid-user
-//     Require valid-user
-// </FilesMatch>
-// ";
-
-//     // Append custom rules to existing rules
-//     // $rules .= $custom_rules;
-
-//     // Return modified rules
-//     return $rules;
-// }
-
-// function author_cap_filter( $allcaps, $cap, $args, $obj )
-// {
-// 	if ( $obj->ID === 0 ) {
-// 		$test = 1;
-// 		if ( $cap[0] === 'unfiltered_html' ) {
-// 			$allcaps[$cap[0]] = true;
-// 		}
-// 	}
-// 	return $allcaps;
-// }
-
-// add_filter( 'user_has_cap', 'author_cap_filter', 10, 4 );
 
 /**
  * Trigger parent folder count update after inserting folder.
@@ -447,6 +357,7 @@ function cr_folder_created( $term_id, $tt_id, $args )
 
 		wp_update_term_count( $term->term_taxonomy_id, CR_FOLDER_TAX );
 	}
+
 	update_term_meta( $term_id, CR_FOLDER_UPDATED_META, time() );
 }
 
@@ -512,8 +423,8 @@ function cr_folder_update_count( $terms, $taxonomy )
 			'parent'     => $term->term_id,
 		) );
 
-		$attachments = get_posts( array(
-			'post_type' => 'attachment',
+		$files = get_posts( array(
+			'post_type' => CR_FILE_TYPE,
 			'nopaging'  => true,
 			'tax_query' => array(
 				array(
@@ -525,11 +436,11 @@ function cr_folder_update_count( $terms, $taxonomy )
 			)
 		) );
 
-		if ( is_wp_error( $subfolders ) || is_wp_error( $attachments ) ) {
+		if ( is_wp_error( $subfolders ) || is_wp_error( $files ) ) {
 			return;
 		}
 
-		$count = count( $subfolders ) + count( $attachments );
+		$count = count( $subfolders ) + count( $files );
 
 		do_action( 'edit_term_taxonomy', $term_taxonomy_id, $taxonomy->name );
 		$wpdb->update( $wpdb->term_taxonomy, array( 'count' => $count ), array( 'term_taxonomy_id' => $term_taxonomy_id ) );
@@ -544,11 +455,10 @@ function cr_folder_update_count( $terms, $taxonomy )
  *
  * @since 0.1.0
  *
- * @global bool|null $cr_delete_attachments_flag
  * @param int    $term     Term ID
  * @param string $taxonomy Taxonomy name
  */
-function cr_pre_delete_term( $term, $taxonomy )
+function cr_pre_delete_folder( $term, $taxonomy )
 {
 	if ( $taxonomy === CR_FOLDER_TAX ) {
 		$term_children = get_term_children( $term, $taxonomy );
@@ -559,7 +469,7 @@ function cr_pre_delete_term( $term, $taxonomy )
 		}
 
 		$files = get_posts( array(
-			'post_type'   => 'attachment',
+			'post_type'   => CR_FILE_TYPE,
 			'nopaging'    => true,
 			'tax_query'   => array(
 				array(
@@ -568,83 +478,21 @@ function cr_pre_delete_term( $term, $taxonomy )
 					'terms'            => $term,
 					'include_children' => false
 				)
-			)
+			),
+			'orderby'     => 'title',
+			'order'       => 'ASC',
 		) );
 
-		global $cr_delete_attachments_flag;
 		foreach ( $files as $file ) {
-			if ( $cr_delete_attachments_flag ) {
-				wp_delete_attachment( $file->ID, true );
-			} else {
-				wp_update_post( array(
-					'ID'          => $file->ID,
-					'post_parent' => 0
-				) );
-			}
+			wp_delete_post( $file->ID, true );
 		}
     }
 }
 
 /**
- * Set permanently delete file flag when deleting folder.
- * Based on request params sets $cr_delete_attachments_flag to true.
- *
- * @since 0.1.0
- *
- * @global bool|null $cr_delete_attachments_flag
- * @param WP_REST_Response  $response  The response object.
- * @param WP_Term           $item      The original term object.
- * @param WP_REST_Request   $request   Request used to generate the response.
- */
-function cr_set_file_delete_flag( $response, $item, $request )
-{
-	$request;
-	if ( $request->get_method() === 'DELETE' && $request['deleteAttachments'] ) {
-		global $cr_delete_attachments_flag;
-		$cr_delete_attachments_flag = true;
-	}
-	return $response;
-}
-
-/**
- * Add course meta REST param.
- *
- * @since 0.1.0
- *
- * @param array       $query_params JSON Schema-formatted collection parameters.
- * @param WP_Taxonomy $taxonomy     Taxonomy object.
- */
-function cr_folder_collection_params( $query_params, $taxonomy )
-{
-	$query_params[CR_FOLDER_COURSE_META] = array(
-		'description' => __( 'Limit result set to terms assigned to a specific course.', CR_TEXT_DOMAIN ),
-		'type'        => 'integer',
-		'default'     => null,
-	);
-
-	return $query_params;
-}
-
-/**
- * REST filter folders by course meta.
- *
- * @since 0.1.0
- *
- * @param array           $prepared_args Array of arguments for get_terms().
- * @param WP_REST_Request $request       The REST API request.
- */
-function cr_folder_course_filter( $prepared_args, $request )
-{
-	if ( isset( $request[CR_FOLDER_COURSE_META] ) ) {
-		$prepared_args['meta_key'] = CR_FOLDER_COURSE_META;
-		$prepared_args['meta_value'] = sanitize_text_field( $request[CR_FOLDER_COURSE_META] );
-	}
-
-	return $prepared_args;
-}
-
-/**
  * Get path from root to folder.
+ *
+ * @since 0.1.0
  *
  * @param WP_Term|int $folder folder term or 0 for root folder
  * @return array
@@ -683,6 +531,8 @@ function cr_get_folder_path( $folder )
 /**
  * Get subfolders of parent folder.
  *
+ * @since 0.1.0
+ *
  * @param WP_Post     $course
  * @param WP_Term|int $parent
  * @return WP_Term[]
@@ -706,6 +556,8 @@ function cr_get_child_folders( $course, $parent )
 /**
  * Get files in parent folder.
  *
+ * @since 0.1.0
+ *
  * @param WP_Post     $course
  * @param WP_Term|int $parent
  * @return WP_Post[]
@@ -725,13 +577,12 @@ function cr_get_child_files( $course, $parent )
 	}
 
 	$args = array(
-		'post_parent'    => $course->ID,
-		'post_type'      => 'attachment',
-		// 'post_mime_type' => $type,
-		'posts_per_page' => -1,
-		'orderby'        => 'name',
-		'order'          => 'ASC',
-		'tax_query'      => array ( $tax_query )
+		'post_parent' => $course->ID,
+		'post_type'   => CR_FILE_TYPE,
+		'nopaging'    => true,
+		'orderby'     => 'title',
+		'order'       => 'ASC',
+		'tax_query'   => array ( $tax_query )
 	);
 
 	$children = get_children( $args );

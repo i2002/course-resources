@@ -54,6 +54,19 @@ add_action( 'admin_init', 'cr_plugin_options_init' );
 // Register types
 add_action( 'init', 'cr_register_custom_types' );
 
+// Delete course files
+add_action( 'before_delete_post', 'cr_before_delete_course', 10, 2);
+
+// File access proxy
+add_filter( 'query_vars', 'cr_file_query_var' );
+
+add_action( 'template_redirect', 'cr_file_handler' );
+
+add_filter( 'mod_rewrite_rules', 'cr_file_htaccess_rules' );
+
+// Delete physical file
+add_action( 'before_delete_post', 'cr_before_delete_file', 10, 2 );
+
 // Update folder count
 add_action( 'created_' . CR_FOLDER_TAX, 'cr_folder_created', 10, 3 );
 
@@ -62,14 +75,7 @@ add_action( 'edited_' . CR_FOLDER_TAX, 'cr_folder_updated', 10, 3 );
 add_action( 'delete_' . CR_FOLDER_TAX, 'cr_folder_deleted', 10, 4 );
 
 // Cascade delete
-add_action( 'pre_delete_term', 'cr_pre_delete_term', 10, 2 );
-
-add_filter( 'rest_prepare_' . CR_FOLDER_TAX, 'cr_set_file_delete_flag', 10, 3 );
-
-// Add REST filter
-add_filter( 'rest_' . CR_FOLDER_TAX . '_collection_params', 'cr_folder_collection_params', 10, 2 );
-
-add_filter( 'rest_' . CR_FOLDER_TAX . '_query', 'cr_folder_course_filter', 10, 2 );
+add_action( 'pre_delete_term', 'cr_pre_delete_folder', 10, 2 );
 
 // Magic link handler
 add_action( 'init', 'cr_magic_link_handler' );

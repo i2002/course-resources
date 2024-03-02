@@ -1,4 +1,3 @@
-// import { getResDate, getResSize } from '@/lib/utils';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import type { ChangeEvent, MouseEvent } from 'react';
 import type { Resource } from '../../../lib/file-data-types';
@@ -10,7 +9,7 @@ const DataLoading = ({ rows }: { rows: number }) =>
 	[...Array(rows)].map((_el, i) => (
 		<Fragment key={i}>
 			<div className="tw-px-3 tw-py-2 hover:tw-bg-slate-50 tw-rounded tw-border-b-slate-200 tw-border-b tw-gap-2">
-				<div className="tw-animate-pulse tw-h-2 tw-my-2 tw-rounded-full tw-bg-slate-200"></div>
+				<div className="tw-animate-pulse tw-h-2 tw-my-1.5 tw-rounded-full tw-bg-slate-200"></div>
 			</div>
 		</Fragment>
 	));
@@ -129,7 +128,6 @@ export default function FileManagerChildren() {
 					<span
 						className="tw-truncate tw-cursor-pointer"
 						title={child.name}
-						//  dangerouslySetInnerHTML={{ __html: child.name }}
 					>
 						{child.name}
 					</span>
@@ -141,7 +139,6 @@ export default function FileManagerChildren() {
 						title={getResDate(child, 'full')}
 					>
 						{getResDate(child)}
-						{/* <span>a</span> */}
 					</span>
 				</div>
 			))}

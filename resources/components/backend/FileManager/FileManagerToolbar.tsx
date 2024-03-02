@@ -1,5 +1,3 @@
-import AddFolderDialog from '../dialogs/AddFolderDialog';
-// import ConfirmDeleteResourceDialog from '@/components/admin/dialogs/ConfirmDeleteResourceDialog';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import {
 	DocumentPlusIcon,
@@ -9,8 +7,8 @@ import {
 	ScissorsIcon,
 	TrashIcon,
 } from '@heroicons/react/24/outline';
-import { Fragment, useState } from '@wordpress/element';
-import wp from '../../../lib/wp-types';
+import { Fragment, useRef, useState } from '@wordpress/element';
+import AddFolderDialog from '../dialogs/AddFolderDialog';
 import ConfirmDeleteResourceDialog from '../dialogs/ConfirmDeleteResourceDialog';
 import RenameResourceDialog from '../dialogs/RenameResourceDialog';
 import { useFileManagerContext } from './FileManagerContext';
@@ -22,77 +20,26 @@ export default function FileManagerToolbar() {
 		moving,
 		setParent,
 		addFolder,
-		attachMedia,
-		// uploadFile,
+		uploadFiles,
 		renameResource,
 		deleteSelection,
 		startMoveSelection,
 		cancelMoveSelection,
 		endMoveSelection,
 	} = useFileManagerContext();
+
+	const fileUploadRef = useRef<HTMLInputElement>(null);
+
 	const [addFolderDialogOpen, setAddFolderDialogOpen] = useState(false);
 	const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] =
 		useState(false);
 	const [renameDialogOpen, setRenameDialogOpen] = useState(false);
 
-	const showMediaFrame = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-
-		// create new media frame
-		const frame = wp.media({
-			// const frame = new wp.media.view.MediaFrame.Select({
-			title: 'Attach files to course folder',
-			button: {
-				text: 'Attach selection',
-			},
-			frame: 'select',
-			multiple: true,
-			library: {
-				// order: 'ASC',
-
-				// [ 'name', 'author', 'date', 'title', 'modified', 'uploadedTo',
-				// 'id', 'post__in', 'menuOrder' ]
-				// orderby: 'title',
-
-				// mime type. e.g. 'image', 'image/jpeg'
-				// type: 'image',
-
-				// Searches the attachment title.
-				// search: null,
-
-				// Attached to a specific post (ID).
-				uploadedTo: 0,
-
-				// meta_key: 'cr-folder',
-				// meta_value_num: 19,
-				// folder: 'cc',
-			},
-		});
-
-		// frame.on('open', () => {
-		// 	// console.log(frame.state());
-		// 	const library = frame.state().get('library');
-		// 	// library.props.set({
-		// 	// 	orderby: 'date',
-		// 	// 	order: 'ASC',
-		// 	// 	meta_key: '30',
-		// 	// 	'cr-folder': 'a',
-		// 	// });
-		// 	console.log(library.props);
-		// 	// library._requery(true);
-		// });
-
-		// add select callback
-		frame.on('select', () =>
-			attachMedia(frame.state().get('selection').toJSON())
-		);
-
-		// frame.on('select', () =>
-		// 	console.log(frame.state().get('selection').toJSON())
-		// );
-
-		// show media frame
-		frame.open();
+	const fileChangedHandler = () => {
+		if (fileUploadRef.current?.files) {
+			uploadFiles(fileUploadRef.current.files);
+			fileUploadRef.current.value = '';
+		}
 	};
 
 	return (
@@ -152,14 +99,24 @@ export default function FileManagerToolbar() {
 				>
 					<FolderPlusIcon />
 				</button>
-				<button
-					type="button"
-					title="Adaugare fișier"
-					className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:enabled:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
-					onClick={showMediaFrame}
-				>
-					<DocumentPlusIcon />
-				</button>
+				<div>
+					<label htmlFor="fileUpload">
+						<input
+							ref={fileUploadRef}
+							type="file"
+							name="fileUpload"
+							id="fileUpload"
+							onChange={() => fileChangedHandler()}
+							className="hidden"
+							multiple
+						/>
+						<DocumentPlusIcon
+							title="Încarcă fișier"
+							className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
+						/>
+						<span className="tw-sr-only">Încarcă fișier</span>
+					</label>
+				</div>
 				<button
 					type="button"
 					title="Redenumire resursă"
@@ -206,9 +163,7 @@ export default function FileManagerToolbar() {
 			<ConfirmDeleteResourceDialog
 				open={confirmDeleteDialogOpen}
 				setOpen={setConfirmDeleteDialogOpen}
-				onConfirm={(deleteAttachments) =>
-					deleteSelection(deleteAttachments)
-				}
+				onConfirm={() => deleteSelection()}
 			/>
 
 			{renameDialogOpen && (

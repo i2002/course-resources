@@ -46,6 +46,11 @@ export default function FolderChildren({ courseId, folderChildren }: Props) {
 					</span>
 				</Link>
 			))}
+			{folderChildren.length === 0 && (
+				<div className="tw-text-slate-400 tw-text-sm tw-text-center tw-py-6">
+					Acest folder nu conține niciun fișier.
+				</div>
+			)}
 		</div>
 	);
 }

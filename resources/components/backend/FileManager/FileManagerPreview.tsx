@@ -1,18 +1,18 @@
 import { Dialog } from '@headlessui/react';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
-import type wp from '../../../lib/wp-types';
+import type { Resource } from '../../../lib/file-data-types';
 import ResourceViewer from '../../common/ResourceViewer';
 import { useFileManagerContext } from './FileManagerContext';
 
 export default function FileManagerPreview() {
 	const { preview, setPreview } = useFileManagerContext();
-	const [fileData, setFileData] = useState<wp.Media | null>(null);
+	const [fileData, setFileData] = useState<Resource | null>(null);
 
 	useEffect(() => {
 		if (preview) {
-			apiFetch<wp.Media>({
-				path: `/wp/v2/media/${preview}`,
+			apiFetch<Resource>({
+				path: `/course-resources/v1/files/${preview}`,
 			}).then((data) => setFileData(data));
 		} else {
 			setFileData(null);

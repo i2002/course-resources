@@ -1,74 +1,4 @@
 declare namespace wp {
-	function media(args: {
-		frame?:
-			| 'select'
-			| 'post'
-			| 'manage'
-			| 'image'
-			| 'audio'
-			| 'video'
-			| 'edit-attachments';
-		title?: string;
-		modal?: boolean;
-		uploader?: boolean;
-		selection?: number[];
-		multiple?: boolean;
-		button?: {
-			text: string;
-		};
-		library: {
-			uploadedTo: number;
-		};
-	}): wp.MediaFrame;
-
-	interface MediaFrame {
-		open: () => MediaFrame;
-		on: (event: string, callback: () => any) => void;
-		state: () => StateMachine;
-	}
-
-	interface StateMachine {
-		get: (state: 'selection') => Selection;
-	}
-
-	interface Selection {
-		toJSON: () => Attachment[];
-	}
-
-	interface Attachment {
-		alt: string;
-		author: string;
-		authorLink: string;
-		authorName: string;
-		caption: string;
-		compat: {
-			item: string;
-			meta: string;
-		};
-		context: string;
-		date: number;
-		dateFormatted: string;
-		description: string;
-		editLink: string;
-		filename: string;
-		filesizeHumanReadable: string;
-		filesizeInBytes: number;
-		icon: string;
-		id: number;
-		link: number;
-		menuOrder: number;
-		meta: boolean;
-		mime: string;
-		modified: number;
-		name: string;
-		status: string;
-		subtype: string;
-		title: string;
-		type: string;
-		uploadedTo: number;
-		url: string;
-	}
-
 	interface Media {
 		date: string | null;
 		date_gmt: string | null;
@@ -88,7 +18,10 @@ declare namespace wp {
 		author: number;
 		comment_status: 'open' | 'closed';
 		ping_status: 'open' | 'closed';
-		meta: {};
+		meta: {
+			cr_file_size: number;
+			cr_file_mime_type: string;
+		};
 		template: string;
 		alt_text: string;
 		caption: {
@@ -154,7 +87,7 @@ declare namespace wp {
 
 	interface Course extends Post {
 		meta: {
-			students: string[];
+			cr_course_students: string[];
 		};
 	}
 
@@ -200,8 +133,8 @@ declare namespace wp {
 		parent: number;
 		path: Array<{ name: string; id: number }>;
 		meta: {
-			course: number;
-			updatedAt: number;
+			cr_folder_course: number;
+			cr_folder_updated_at: number;
 		};
 	}
 }

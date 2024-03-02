@@ -1,6 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
 import { Resource, ResourcePath } from "../../../lib/file-data-types";
-import wp from "../../../lib/wp-types";
 
 export type FileManagerContextType = {
 	courseId: number;
@@ -17,11 +16,10 @@ export type FileManagerContextType = {
 	setSelected: Dispatch<SetStateAction<Resource[]>>;
 	dismissError: () => void;
 	addFolder: (name: string) => void;
-	attachMedia: (attachments: wp.Attachment[]) => void;
 	refresh: () => void;
-  // uploadFile: (files: FileList) => void;
+	uploadFiles: (files: FileList) => void;
 	renameResource: (newName: string, renamed: Resource) => void;
-	deleteSelection: (deleteAttachments: boolean) => void;
+	deleteSelection: () => void;
 	startMoveSelection: () => void;
 	cancelMoveSelection: () => void;
 	endMoveSelection: () => void;
