@@ -2,7 +2,7 @@ import ResourceViewerHeader from '../../../common/ResourceViewer/ResourceViewerH
 
 export default function FileLoading() {
 	return (
-		<ResourceViewerHeader name="Loading..." onClose={() => {}}>
+		<ResourceViewerHeader name="" onClose={() => {}}>
 			<div
 				role="status"
 				className="tw-absolute tw-h-full tw-w-full tw-flex tw-items-center tw-justify-center"

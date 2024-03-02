@@ -1,5 +1,11 @@
 import type { Resource } from './file-data-types';
 
+/**
+ * Human readable file size format.
+ *
+ * @param bytes file size in bytes
+ * @return the formatted file size
+ */
 const formatSize = (bytes: number) => {
 	if (bytes === 0) {
 		return '0.00 B';
@@ -12,12 +18,25 @@ const formatSize = (bytes: number) => {
 	return `${base} ${unit}`;
 };
 
+/**
+ * Get formatted resource size.
+ *
+ * @param res resource
+ * @return the formatted resource size
+ */
 export function getResSize(res: Resource) {
 	return res.type === 'folder'
 		? res._count?.children ?? 0
 		: formatSize(res.fileData?.size ?? 0);
 }
 
+/**
+ * Get formatted resource updated timestamp.
+ *
+ * @param res     resource
+ * @param context context of the string (full means to return full datetime formatted string to show in tooltip, display shows only formatted date string)
+ * @return the formatted resource updated timestamp
+ */
 export function getResDate(
 	res: Resource,
 	context: 'full' | 'display' = 'display'

@@ -136,5 +136,26 @@ function cr_frontend_shortcode()
 function cr_frontend_render_shortcode()
 {
 	cr_enqueue_frontend_assets();
-	return '<div class="react-root" id="cr-frontend-app"></div>';
+
+	// load initial data
+	$student = cr_get_current_student();
+	$hydration_data = array();
+	if ( $student === false ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			cr_auth_login( 'admin' );
+			$student = 'admin';
+		} else {
+			$hydration_data['errors'] = array(
+				'root' => array( 'code' => 'cr_rest_unauth' )
+			);
+		}
+	} else {
+		$courses = array_map( 'cr_prepare_course_response', cr_get_student_courses( $student ) );
+		$hydration_data['loaderData'] = array(
+			'root' => array( 'user' => array( 'email' => $student ) ),
+			'home' => array( 'courses' => $courses )
+		);
+	}
+
+	return '<div class="react-root" id="cr-frontend-app" data-initial="'. esc_attr( json_encode( $hydration_data ) ) . '"></div>';
 }

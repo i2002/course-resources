@@ -40,6 +40,8 @@ const getErrorMessage = (errorCode: string) => {
 			return 'Un email a fost trimis deja la adresa specificată. Dacă nu ați primit email-ul puteți reîncerca peste un minut.';
 		case 'cr_auth_email_error':
 			return 'Nu s-a putut trimite email-ul.';
+		case 'cr_auth_access_denied':
+			return 'Adresa de email nu este înregistrată la niciun curs.';
 		case 'invalid_code':
 			return 'Link-ul de autentificare a expirat sau a fost folosit deja.';
 		default:
