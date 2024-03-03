@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef } from '@wordpress/element';
-import { __, _n } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import type { ChangeEvent, MouseEvent } from 'react';
 import type { Resource } from '../../../lib/file-data-types';
 import { getResDate, getResSize } from '../../../lib/utils';
@@ -91,12 +91,15 @@ export default function FileManagerChildren() {
 					title={
 						selected.length === 0
 							? __('None selected', 'course-resources')
-							: /* translators: %s number of selected resources */
-								_n(
-									'%s selected',
-									'%s selected',
-									selected.length,
-									'course-resources'
+							: sprintf(
+									/* translators: %s number of selected resources */
+									_n(
+										'%s selected',
+										'%s selected',
+										selected.length,
+										'course-resources'
+									),
+									selected.length
 								)
 					}
 					checked={

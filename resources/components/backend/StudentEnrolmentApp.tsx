@@ -1,6 +1,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
-import { __, _n } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import wp from '../../lib/wp-types';
 import StudentEnrolmentDialog from './dialogs/StudentEntrolmentDialog';
 
@@ -58,15 +58,16 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			<p
 				className={`tw-text-base tw-p-1 ${loading ? 'tw-text-slate-500' : 'tw-text-slate-900'}`}
 			>
-				{
+				{sprintf(
 					/* translators: %s number of enrolled students */
 					_n(
 						'%s student enrolled',
 						'%s students enrolled',
 						emails.length,
 						'course-resources'
-					)
-				}
+					),
+					emails.length
+				)}
 			</p>
 			<button
 				type="button"
