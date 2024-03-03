@@ -1,4 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { redirect, useSearchParams } from 'react-router-dom';
 import type { User } from '../../../lib/auth-types';
 import EmailForm from './EmailForm';
@@ -29,7 +30,7 @@ export default function LoginView() {
 		>
 			<div className="tw-max-w-lg tw-mx-auto tw-h-full tw-w-full tw-flex tw-flex-col tw-mt-10">
 				<h1 className="tw-text-center tw-text-2xl tw-font-medium tw-my-10">
-					Autentificare student
+					{__('Student login', 'course-resources')}
 				</h1>
 
 				<FormMessage />

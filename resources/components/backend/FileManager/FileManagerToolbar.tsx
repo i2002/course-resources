@@ -8,6 +8,7 @@ import {
 	TrashIcon,
 } from '@heroicons/react/24/outline';
 import { Fragment, useRef, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import AddFolderDialog from '../dialogs/AddFolderDialog';
 import ConfirmDeleteResourceDialog from '../dialogs/ConfirmDeleteResourceDialog';
 import RenameResourceDialog from '../dialogs/RenameResourceDialog';
@@ -47,7 +48,7 @@ export default function FileManagerToolbar() {
 			<div className="tw-w-full tw-flex tw-text-sm tw-items-center">
 				<HomeIcon
 					className="tw-w-5 tw-h-5 tw-mx-1 tw-cursor-pointer hover:tw-text-slate-900"
-					title="Folder rădăcină"
+					title={__('Root folder', 'course-resources')}
 					onClick={() => setParent(0)}
 				/>
 				{path.length > 3 && (
@@ -80,20 +81,20 @@ export default function FileManagerToolbar() {
 							onClick={() => cancelMoveSelection()}
 							className="hover:tw-underline tw-mx-1 tw-font-medium"
 						>
-							Renunță
+							{__('Cancel', 'course-resources')}
 						</button>
 						<button
 							type="button"
 							onClick={() => endMoveSelection()}
 							className="hover:tw-underline tw-mx-1 tw-font-medium"
 						>
-							Mută aici
+							{__('Move here', 'course-resources')}
 						</button>
 					</div>
 				)}
 				<button
 					type="button"
-					title="Director nou"
+					title={__('New folder', 'course-resources')}
 					onClick={() => setAddFolderDialogOpen(true)}
 					className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:enabled:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
 				>
@@ -111,15 +112,17 @@ export default function FileManagerToolbar() {
 							multiple
 						/>
 						<DocumentPlusIcon
-							title="Încarcă fișier"
+							title={__('Upload file', 'course-resources')}
 							className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
 						/>
-						<span className="tw-sr-only">Încarcă fișier</span>
+						<span className="tw-sr-only">
+							{__('Upload file', 'course-resources')}
+						</span>
 					</label>
 				</div>
 				<button
 					type="button"
-					title="Redenumire resursă"
+					title={__('Rename resource', 'course-resources')}
 					className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:enabled:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
 					disabled={selected.length !== 1}
 					onClick={() =>
@@ -130,7 +133,7 @@ export default function FileManagerToolbar() {
 				</button>
 				<button
 					type="button"
-					title="Mutare selecție"
+					title={__('Move selection', 'course-resources')}
 					className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 hover:enabled:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
 					onClick={() =>
 						selected.length !== 0 &&
@@ -143,7 +146,7 @@ export default function FileManagerToolbar() {
 				</button>
 				<button
 					type="button"
-					title="Ștergere selecție"
+					title={__('Delete selection', 'course-resources')}
 					className="tw-w-6 tw-h-6 tw-p-0.5 tw-mx-1 enabled:hover:tw-text-teal-600 tw-cursor-pointer disabled:tw-cursor-not-allowed disabled:tw-text-gray-400"
 					disabled={selected.length === 0}
 					onClick={() =>

@@ -12,8 +12,8 @@ define( 'CR_SETTING_LOGIN_REQUEST_COOLDOWN', 'cr_login_request_cooldown' );
 function cr_register_admin_menu()
 {
 	add_menu_page(
-		__( 'Course resources', CR_TEXT_DOMAIN ),
-		__( 'Course resources', CR_TEXT_DOMAIN ),
+		__( 'Course resources', 'course-resources' ),
+		__( 'Course resources', 'course-resources' ),
 		'manage_options',
 		CR_ADMIN_MENU,
 		'',
@@ -23,8 +23,8 @@ function cr_register_admin_menu()
 
 	add_submenu_page(
 		CR_ADMIN_MENU,
-		__( 'Course resources - Options', CR_TEXT_DOMAIN ),
-		__( 'Options', CR_TEXT_DOMAIN ),
+		__( 'Course resources - Options', 'course-resources' ),
+		__( 'Options', 'course-resources' ),
 		'manage_options',
 		CR_ADMIN_MENU,
 		'cr_plugin_options'
@@ -38,9 +38,17 @@ function cr_register_admin_menu()
  */
 function cr_course_register_metabox()
 {
+	remove_meta_box( 'postcustom', CR_COURSE_TYPE, 'normal' );
+
+	// show only on edit screens
+	$screen = get_current_screen();
+    if( $screen->action === 'add' ) {
+		return;
+	}
+
 	add_meta_box(
 		'cr_file_manager_metabox',
-		__( 'Course files', CR_TEXT_DOMAIN ),
+		__( 'Course files', 'course-resources' ),
 		function ( $post ) { echo '<div id="course-files-app" class="react-root" data-course-id="' . $post->ID . '"></div>'; },
 		CR_COURSE_TYPE,
 		'normal'
@@ -48,13 +56,11 @@ function cr_course_register_metabox()
 
 	add_meta_box(
 		'cr_student_enrolment_metabox',
-		__( 'Student enrolment', CR_TEXT_DOMAIN ),
+		__( 'Student enrolment', 'course-resources' ),
 		function ( $post ) { echo '<div id="student-enrolment-app" class="react-root" data-course-id="' . $post->ID . '"></div>'; },
 		CR_COURSE_TYPE,
 		'side'
 	);
-
-	remove_meta_box( 'postcustom', CR_COURSE_TYPE, 'normal' );
 }
 
 /**
@@ -67,21 +73,21 @@ function cr_plugin_options_init()
 	// Register settings
 	register_setting( 'cr_options', CR_SETTING_LOGIN_EXP, array(
 		'type'              => 'integer',
-		'description'       => __( 'Duration in seconds of login token validity', CR_TEXT_DOMAIN ),
+		'description'       => __( 'Duration in seconds of login token validity', 'course-resources' ),
 		'sanitize_callback' => null,
 		'default'           => 30 * 24 * 3600 // 30 days
 	) );
 
 	register_setting( 'cr_options', CR_SETTING_LOGIN_LINK_EXP, array(
 		'type'              => 'integer',
-		'description'       => __( 'Duration in seconds of email login link validity', CR_TEXT_DOMAIN ),
+		'description'       => __( 'Duration in seconds of email login link validity', 'course-resources' ),
 		'sanitize_callback' => null,
 		'default'           => 3 * 3600 // 3 hours
 	) );
 
 	register_setting( 'cr_options', CR_SETTING_LOGIN_REQUEST_COOLDOWN, array(
 		'type'              => 'integer',
-		'description'       => __( 'Duration in seconds before requesting another login email', CR_TEXT_DOMAIN ),
+		'description'       => __( 'Duration in seconds before requesting another login email', 'course-resources' ),
 		'sanitize_callback' => null,
 		'default'           => 60 // 1 minute
 	) );
@@ -89,7 +95,7 @@ function cr_plugin_options_init()
 	// Register setting sections
 	add_settings_section(
 		'cr_section_security',
-		__( 'Security', CR_TEXT_DOMAIN ),
+		__( 'Security', 'course-resources' ),
 		'cr_section_security_cb',
 		'cr_options'
 	);
@@ -97,20 +103,20 @@ function cr_plugin_options_init()
 	// Register setting fields
 	add_settings_field(
 		'cr_field_login_expiration',
-		__( 'Login expiration time', CR_TEXT_DOMAIN ),
+		__( 'Login expiration time', 'course-resources' ),
 		'cr_field_numeric_cb',
 		'cr_options',
 		'cr_section_security',
 		array(
 			'label_for'   => 'cr_field_login_expiration',
 			'name'        => CR_SETTING_LOGIN_EXP,
-			'description' => __( 'How long a session is valid until a new sign in is required (value in seconds)', CR_TEXT_DOMAIN )
+			'description' => __( 'How long a session is valid until a new sign in is required (value in seconds)', 'course-resources' )
 		)
 	);
 
 	add_settings_field(
 		'cr_field_revoke_logins',
-		__(  'Revoke login tokens', CR_TEXT_DOMAIN ),
+		__(  'Revoke login tokens', 'course-resources' ),
 		'cr_field_revoke_logins_cb',
 		'cr_options',
 		'cr_section_security',
@@ -121,33 +127,33 @@ function cr_plugin_options_init()
 
 	add_settings_field(
 		'cr_field_login_link_expiration',
-		__( 'Login email expiration time', CR_TEXT_DOMAIN ),
+		__( 'Login email expiration time', 'course-resources' ),
 		'cr_field_numeric_cb',
 		'cr_options',
 		'cr_section_security',
 		array(
 			'label_for' => 'cr_field_login_link_expiration',
 			'name' => CR_SETTING_LOGIN_LINK_EXP,
-			'description' => __( 'How long is the login email valid (value in seconds)', CR_TEXT_DOMAIN )
+			'description' => __( 'How long is the login email valid (value in seconds)', 'course-resources' )
 		)
 	);
 
 	add_settings_field(
 		'cr_field_login_request_cooldown',
-		__( 'Login request cooldown', CR_TEXT_DOMAIN ),
+		__( 'Login request cooldown', 'course-resources' ),
 		'cr_field_numeric_cb',
 		'cr_options',
 		'cr_section_security',
 		array(
 			'label_for' => 'cr_field_login_request_cooldown',
 			'name' => CR_SETTING_LOGIN_REQUEST_COOLDOWN,
-			'description' => __( 'Minimum time between two consecutive login emails sent (value in seconds)', CR_TEXT_DOMAIN )
+			'description' => __( 'Minimum time between two consecutive login emails sent (value in seconds)', 'course-resources' )
 		)
 	);
 
 	add_settings_field(
 		'cr_field_revoke_login_links',
-		__( 'Revoke sent login links', CR_TEXT_DOMAIN ),
+		__( 'Revoke sent login links', 'course-resources' ),
 		'cr_field_revoke_login_links_cb',
 		'cr_options',
 		'cr_section_security',
@@ -170,7 +176,7 @@ function cr_plugin_options_init()
  */
 function cr_section_security_cb( $args )
 {
-	echo '<p id="' . esc_attr( $args['id'] ) . '">' . __( 'Settings related to student login', CR_TEXT_DOMAIN ) .'</p>';
+	echo '<p id="' . esc_attr( $args['id'] ) . '">' . __( 'Settings related to student login', 'course-resources' ) .'</p>';
 }
 
 /**
@@ -219,7 +225,7 @@ function cr_field_revoke_logins_cb( $args )
 		Revoke
 	</button>
 	<p class="description">
-		<?php _e( 'Force logout all connected users', CR_TEXT_DOMAIN ) ?>
+		<?php _e( 'Force logout all connected users', 'course-resources' ) ?>
 	</p>
 	<?php
 }
@@ -245,7 +251,7 @@ function cr_field_revoke_login_links_cb( $args )
 		Revoke
 	</button>
 	<p class="description">
-		<?php _e( 'Invalidate all login emails sent', CR_TEXT_DOMAIN ) ?>
+		<?php _e( 'Invalidate all login emails sent', 'course-resources' ) ?>
 	</p>
 	<?php
 }
@@ -283,7 +289,7 @@ function cr_plugin_options() {
 	}
 
 	if ( isset( $_GET['settings-updated'] ) ) {
-		add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings updated', CR_TEXT_DOMAIN ), 'info' );
+		add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings updated', 'course-resources' ), 'info' );
 	}
 
 	settings_errors( 'wporg_messages' );
@@ -294,7 +300,7 @@ function cr_plugin_options() {
 			<?php
 			settings_fields( 'cr_options' );
 			do_settings_sections( 'cr_options' );
-			submit_button( 'Save Settings', 'primary', 'submit', false );
+			submit_button( __( 'Save Settings', 'course-resources' ), 'primary', 'submit', false );
 			?>
 		</form>
 	</div>

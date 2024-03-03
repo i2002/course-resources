@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef } from '@wordpress/element';
+import { __, _n } from '@wordpress/i18n';
 import type { ChangeEvent, MouseEvent } from 'react';
 import type { Resource } from '../../../lib/file-data-types';
 import { getResDate, getResSize } from '../../../lib/utils';
@@ -89,8 +90,14 @@ export default function FileManagerChildren() {
 					className="tw-form-checkbox"
 					title={
 						selected.length === 0
-							? 'Niciunul selectat'
-							: `${selected.length} ${selected.length === 1 ? 'selectat' : 'selectate'}`
+							? __('None selected', 'course-resources')
+							: /* translators: %s number of selected resources */
+								_n(
+									'%s selected',
+									'%s selected',
+									selected.length,
+									'course-resources'
+								)
 					}
 					checked={
 						selected.length === resources.length &&
@@ -98,9 +105,11 @@ export default function FileManagerChildren() {
 					}
 					onChange={selectionCheckboxHandler}
 				/>
-				<span className="tw-col-span-2">Nume</span>
-				<span>Dimensiune</span>
-				<span>Modificat la</span>
+				<span className="tw-col-span-2">
+					{__('Name', 'course-resources')}
+				</span>
+				<span>{__('Size', 'course-resources')}</span>
+				<span>{__('Last updated', 'course-resources')}</span>
 			</div>
 			{resources.map((child) => (
 				<div
@@ -145,7 +154,7 @@ export default function FileManagerChildren() {
 			{resources.length === 0 &&
 				((loading && <DataLoading rows={3} />) || (
 					<div className="tw-text-center tw-py-4 tw-text-slate-400">
-						Acest director nu conține niciun fișier.
+						{__('This folder is empty.', 'course-resources')}
 					</div>
 				))}
 		</div>

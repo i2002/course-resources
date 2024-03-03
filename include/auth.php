@@ -102,7 +102,7 @@ function cr_get_current_student()
 function cr_get_student_courses( $email )
 {
 	$args = array(
-		'post_type' => CR_COURSE_TYPE,
+		'post_type'      => CR_COURSE_TYPE,
 		'posts_per_page' => -1
 	);
 
@@ -110,12 +110,13 @@ function cr_get_student_courses( $email )
 	if ( ! current_user_can( 'manage_options' ) ) {
 		$args['meta_query'] = array(
 			array(
-				'key' => CR_COURSE_STUDENTS_META,
-				'value' => $email,
+				'key'     => CR_COURSE_STUDENTS_META,
+				'value'   => $email,
 				'compare' => 'LIKE',
 			),
 		);
 	}
+
 	$courses = get_posts( $args );
 
 	return $courses;
@@ -186,13 +187,13 @@ function cr_auth_login_request( $email, $redirect_url )
 	$login_token = cr_get_login_link( $email );
 
 	// check if email is enrolled to any course
-	if ( empty( cr_get_student_courses( $email ) ) ) {
-		return new WP_Error( 'cr_auth_access_denied', 'The provided email address is not enrolled in any course.', array( 'status' => 401 ) );
+	if ( ! cr_get_student_courses( $email ) ) {
+		return new WP_Error( 'cr_auth_access_denied', __( 'The provided email address is not enrolled in any course.', 'course-resources' ), array( 'status' => 401 ) );
 	}
 
 	// email sending rate limiting
     if ( $login_token && time() < $login_token['created'] + get_option( CR_SETTING_LOGIN_REQUEST_COOLDOWN ) ) {
-		return new WP_Error( 'cr_auth_email_timeout', __( 'An email has already been sent.', CR_TEXT_DOMAIN ), array( 'status' => 429 ) );
+		return new WP_Error( 'cr_auth_email_timeout', __( 'An email has already been sent.', 'course-resources' ), array( 'status' => 429 ) );
 	}
 
 	$magic_link_token = cr_create_login_link( $email );
@@ -202,7 +203,7 @@ function cr_auth_login_request( $email, $redirect_url )
 	// sending error
 	if ( ! $ret ) {
 		cr_unset_login_link( $email );
-		return new WP_Error( 'cr_auth_email_error', 'Failed to send email. Please try again later.', array( 'status' => 503 ) );
+		return new WP_Error( 'cr_auth_email_error', __( 'Failed to send email. Please try again later.', 'course-resources' ), array( 'status' => 503 ) );
 	}
 
 	return $ret;
@@ -222,14 +223,15 @@ function cr_send_auth_link( $email, $redirect_url, $token )
 {
 	$login_url = get_site_url() . "?cr_login&code=$token&email=$email&redirect_url=$redirect_url";
 
-	$subject = __( 'Sign in to Course resources requested', CR_TEXT_DOMAIN );
+	$subject = __( 'Sign in to Course resources requested', 'course-resources' );
 	$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 	$message =
-		'<p>' . __( 'Hello,', CR_TEXT_DOMAIN ) . '</p>' .
-		'<p>' . __( 'We received a request to sign in to Course resources using this email address.', CR_TEXT_DOMAIN ) . '</p>' .
-		'<p>' . sprintf( __( 'If you want to sign in with your %s account, click this link:', CR_TEXT_DOMAIN ), $email ) . '</p>' .
+		'<p>' . __( 'Hello,', 'course-resources' ) . '</p>' .
+		'<p>' . __( 'We received a request to sign in to Course resources using this email address.', 'course-resources' ) . '</p>' .
+		/* translators: %s: User email address */
+		'<p>' . sprintf( __( 'If you want to sign in with your %s account, click this link:', 'course-resources' ), $email ) . '</p>' .
 		'<p><a href="' . $login_url . '">' . $login_url . '</a></p>' .
-		'<p>' . __( 'If you did not request this link, you can safely ignore this email.', CR_TEXT_DOMAIN ) . '</p>';
+		'<p>' . __( 'If you did not request this link, you can safely ignore this email.', 'course-resources' ) . '</p>';
 
 	add_action( 'phpmailer_init','cr_set_mail_text_body' );
 	$ret = wp_mail( $email, $subject, $message, $headers );

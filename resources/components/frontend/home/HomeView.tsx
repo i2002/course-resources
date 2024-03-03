@@ -1,4 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { useLoaderData } from 'react-router-dom';
 import type { Course } from '../../../lib/file-data-types';
 import Header from '../header/Header';
@@ -21,7 +22,7 @@ export default function HomeView() {
 
 	return (
 		<>
-			<Header title="Cursuri" />
+			<Header title={__('Courses', 'course-resources')} />
 			<CourseList courses={courses} />
 		</>
 	);

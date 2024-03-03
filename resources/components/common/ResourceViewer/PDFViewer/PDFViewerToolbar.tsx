@@ -3,6 +3,7 @@ import {
 	MagnifyingGlassPlusIcon as PlusIcon,
 } from '@heroicons/react/20/solid';
 import { useContext } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { PDFViewerContext } from './PDFViewerContext';
 
 export default function PDFViewerToolbar() {
@@ -31,7 +32,7 @@ export default function PDFViewerToolbar() {
 			<div className="tw-w-20 tw-py-1 tw-px-1.5 tw-flex tw-justify-between tw-items-center tw-bg-zinc-600 tw-rounded tw-select-none">
 				<MinusIcon
 					className="tw-cursor-pointer tw-w-4 tw-h-4"
-					title="Micșorare imagine"
+					title={__('Zoom out', 'course-resources')}
 					onClick={() =>
 						dispatch({
 							type: 'scaleDecrease',
@@ -40,7 +41,7 @@ export default function PDFViewerToolbar() {
 				/>
 				<span
 					className="cursor-pointer"
-					title="Resetare scalare"
+					title={__('Reset zoom', 'course-resources')}
 					onClick={() =>
 						dispatch({
 							type: 'scaleReset',
@@ -60,7 +61,7 @@ export default function PDFViewerToolbar() {
 				</span>
 				<PlusIcon
 					className="tw-cursor-pointer tw-w-4 tw-h-4"
-					title="Mărire imagine"
+					title={__('Zoom in', 'course-resources')}
 					onClick={() =>
 						dispatch({
 							type: 'scaleIncrease',

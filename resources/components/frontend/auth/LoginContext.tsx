@@ -1,4 +1,5 @@
 import { createContext, useReducer } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import type { Dispatch } from 'react';
 
 type LoginContextState = {
@@ -37,15 +38,27 @@ const initialState: LoginContextState = {
 const getErrorMessage = (errorCode: string) => {
 	switch (errorCode) {
 		case 'cr_auth_email_timeout':
-			return 'Un email a fost trimis deja la adresa specificată. Dacă nu ați primit email-ul puteți reîncerca peste un minut.';
+			return __(
+				"An email has already been sent to the specified email address. If you didn't receive the email try again in a minute.",
+				'course-resources'
+			);
 		case 'cr_auth_email_error':
-			return 'Nu s-a putut trimite email-ul.';
+			return __("The login email couldn't be sent.", 'course-resources');
 		case 'cr_auth_access_denied':
-			return 'Adresa de email nu este înregistrată la niciun curs.';
+			return __(
+				'The email address is not enrolled in any course.',
+				'course-resources'
+			);
 		case 'invalid_code':
-			return 'Link-ul de autentificare a expirat sau a fost folosit deja.';
+			return __(
+				'Login link expired or already used.',
+				'course-resources'
+			);
 		default:
-			return 'Eroare internă la autentificare.';
+			return __(
+				'Internal server error while logging in.',
+				'course-resources'
+			);
 	}
 };
 
@@ -57,7 +70,7 @@ function reducer(
 		case 'messageErrorCode':
 			return {
 				...state,
-				messageTitle: 'Autentificare eșuată',
+				messageTitle: __('Login failed', 'course-resources'),
 				message: getErrorMessage(action.text),
 				messageType: 'error',
 			};
@@ -65,7 +78,7 @@ function reducer(
 		case 'messageError':
 			return {
 				...state,
-				messageTitle: 'Autentificare eșuată',
+				messageTitle: __('Login failed', 'course-resources'),
 				message: action.text,
 				messageType: 'error',
 			};
@@ -73,8 +86,15 @@ function reducer(
 		case 'messageEmail':
 			return {
 				...state,
-				messageTitle: 'Link de verificare trimis',
-				message: `Linkul de autentificare a fost trimis pe adresa ${action.text}.`,
+				messageTitle: __('Login link sent', 'course-resources'),
+				message: sprintf(
+					/* translators: %s user email address */
+					__(
+						'Login link sent to email address: %s',
+						'course-resources'
+					),
+					action.text
+				),
 				messageType: 'info',
 			};
 

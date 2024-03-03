@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import InputDialog from '../ui/InputDialog';
 
 interface Props {
@@ -19,8 +20,8 @@ export default function ConfirmDeleteResourceDialog({
 	return (
 		<InputDialog
 			open={open}
-			title="Confirmare ștergere selecție"
-			submitButtonLabel="Ștergere selecție"
+			title={__('Delete selection confirmation', 'course-resources')}
+			submitButtonLabel={__('Delete selection', 'course-resources')}
 			submitButtonColor="danger"
 			className="tw-max-w-sm"
 			onClose={() => setOpen(false)}
@@ -28,7 +29,10 @@ export default function ConfirmDeleteResourceDialog({
 		>
 			<div className="tw-mt-4 tw-text-sm tw-font-medium tw-text-slate-900">
 				<p className="tw-mb-3 tw-text-center">
-					Toate fișierele selectate vor fi șterse permanent.
+					{__(
+						'All selected files and folders will be permanently deleted.',
+						'course-resources'
+					)}
 				</p>
 			</div>
 		</InputDialog>

@@ -1,5 +1,6 @@
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { forwardRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import type { ForwardRefRenderFunction } from 'react';
 
 interface Props {
@@ -20,7 +21,7 @@ const ResourceViewerHeader: ForwardRefRenderFunction<HTMLDivElement, Props> =
 					</div>
 					<XMarkIcon
 						className="tw-w-5 tw-h-5 tw-justify-self-end tw-cursor-pointer hover:tw-text-gray-300"
-						title="Închidere"
+						title={__('Close', 'course-resources')}
 						onClick={() => onClose()}
 					/>
 				</header>

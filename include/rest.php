@@ -126,7 +126,7 @@ function cr_rest_get_file( $request )
 	$file = get_post( $request['file_id'] );
 
 	if ( ! $file || $file->post_type !== CR_FILE_TYPE ) {
-		return new WP_Error( 'cr_rest_invalid_param', __( 'Invalid file ID' ) ); // FIXME: text domain
+		return new WP_Error( 'cr_rest_invalid_param', __( 'Invalid file ID', 'course-resources' ) );
 	}
 
 	return rest_ensure_response( cr_prepare_file_response( $file ) );
@@ -147,7 +147,7 @@ function cr_rest_upload_file_permission( $request )
 	if ( ! current_user_can( $post_type->cap->create_posts ) ) {
 		return new WP_Error(
 			'rest_cannot_create',
-			__( 'Sorry, you are not allowed to create files as this user.' ),
+			__( 'Sorry, you are not allowed to create files as this user.', 'course-resources' ),
 			array( 'status' => rest_authorization_required_code() )
 		);
 	}
@@ -155,7 +155,7 @@ function cr_rest_upload_file_permission( $request )
 	if ( ! current_user_can( 'upload_files' ) ) {
 		return new WP_Error(
 			'rest_cannot_create',
-			__( 'Sorry, you are not allowed to upload files on this site.' ),
+			__( 'Sorry, you are not allowed to upload files on this site.', 'course-resources' ),
 			array( 'status' => 400 )
 		);
 	}
@@ -163,7 +163,7 @@ function cr_rest_upload_file_permission( $request )
 	if ( ! empty( $request['course'] ) && ! current_user_can( 'edit_post', (int) $request['course'] ) ) {
 		return new WP_Error(
 			'rest_cannot_edit',
-			__( 'Sorry, you are not allowed to upload files to this course.' ),
+			__( 'Sorry, you are not allowed to upload files to this course.', 'course-resources' ),
 			array( 'status' => rest_authorization_required_code() )
 		);
 	}
@@ -211,23 +211,23 @@ function cr_rest_upload_file( $request )
 function cr_check_upload_file_params( $request )
 {
 	if ( ! isset( $request['parent'] ) ) {
-		return new WP_Error( 'cr_rest_required_param', __( 'File parent required.' ), array( 'status' => 400 ) ); // FIXME: text domain
+		return new WP_Error( 'cr_rest_required_param', __( 'File parent required.', 'course-resources' ), array( 'status' => 400 ) );
 	} else if ( (int) $request['parent'] !== 0 ) {
 		$parent = get_term( $request['parent'], CR_FOLDER_TAX );
 
 		if ( is_null( $parent ) || is_wp_error( $parent ) ) {
-			return new WP_Error( 'cr_rest_invalid_param', __( 'Invalid parent folder.' ), array( 'status' => 400 ) ); // FIXME: text domain
+			return new WP_Error( 'cr_rest_invalid_param', __( 'Invalid parent folder.', 'course-resources' ), array( 'status' => 400 ) );
 		}
 	}
 
 	if ( empty( $request['course'] ) ) {
-		return new WP_Error('cr_rest_required_param', __( 'Course ID required.' ), array( 'status' => 400 ) ); // FIXME: text domain
+		return new WP_Error('cr_rest_required_param', __( 'Course ID required.', 'course-resources' ), array( 'status' => 400 ) );
 	} else if ( get_post_type( $request['course'] ) !== CR_COURSE_TYPE ) {
-		return new WP_Error('cr_rest_invalid_param', __( 'Invalid course.' ), array( 'status' => 400 ) ); // FIXME: text domain
+		return new WP_Error('cr_rest_invalid_param', __( 'Invalid course.', 'course-resources' ), array( 'status' => 400 ) );
 	}
 
 	if ( empty( $request['title'] ) ) {
-		return new WP_Error( 'cr_rest_required_param', __( 'File title required.' ), array( 'status' => 400 ) ); // FIXME: text domain
+		return new WP_Error( 'cr_rest_required_param', __( 'File title required.', 'course-resources' ), array( 'status' => 400 ) );
 	}
 
 	return true;
@@ -330,14 +330,14 @@ function cr_file_uploads_dir( $upload_dir )
 function cr_rest_login( $request )
 {
 	if ( ! isset( $request['email'] ) || ! isset( $request['callbackUrl'] ) ) {
-		return new WP_Error( 'cr_rest_auth_bad_request', 'Bad request', array( 'status' => 400 ) );
+		return new WP_Error( 'cr_rest_auth_bad_request', __( 'Bad request', 'course-resources'), array( 'status' => 400 ) );
 	}
 
 	$email = sanitize_email( $request['email'] );
 	$redirect_url = sanitize_url( $request['callbackUrl'] );
 
 	if ( $email === '' || ! is_email( $email ) || $redirect_url === '' ) {
-		return new WP_Error( 'cr_rest_auth_bad_request', 'Bad request', array( 'status' => 400 ) );
+		return new WP_Error( 'cr_rest_auth_bad_request', __( 'Email invalid', 'course-resources' ), array( 'status' => 400 ) );
 	}
 
 	// student already logged in
@@ -386,7 +386,7 @@ function cr_rest_user_info()
 	$student = cr_get_current_student();
 
 	if ( $student == false ) {
-		return new WP_Error( 'cr_rest_unauth', 'You need to log in to access this.', array( 'status' => 401 ) );
+		return new WP_Error( 'cr_rest_unauth', __( 'You need to log in to access this.', 'course-resources' ), array( 'status' => 401 ) );
 	}
 
 	$data = array(
@@ -422,7 +422,7 @@ function cr_rest_get_courses()
 	$email = cr_get_current_student();
 
 	if ( ! $email ) {
-		return new WP_Error('cr_rest_unauth', 'You need to log in to access this.', array( 'state' => 401 ) );
+		return new WP_Error('cr_rest_unauth', __( 'You need to log in to access this.', 'course-resources' ), array( 'state' => 401 ) );
 	}
 
 	$courses = cr_get_student_courses( $email );
@@ -450,13 +450,13 @@ function cr_rest_course_permission( $request )
 	$email = cr_get_current_student();
 
 	if ( ! $email ) {
-		return new WP_Error( 'cr_rest_unauth', 'You need to log in to access this.', array( 'state' => 401 ) );
+		return new WP_Error( 'cr_rest_unauth', __( 'You need to log in to access this.', 'course-resources' ), array( 'state' => 401 ) );
 	}
 
 	$permission = cr_is_student_enrolled( $email, $course_id );
 
 	if ( $permission === false ) {
-		return new WP_error( 'cr_rest_forbidden', 'You are not enrolled in this course.', array( 'state' => 403 ) );
+		return new WP_error( 'cr_rest_forbidden', __( 'You are not enrolled in this course.', 'course-resources' ), array( 'state' => 403 ) );
 	}
 
 	return true;
@@ -504,7 +504,7 @@ function cr_rest_get_folder_data( $request )
 	// check parent folder has the same course_id
 	if ( $parent !== 0 ) {
 		if ( (int) get_term_meta( $parent->term_id, CR_FOLDER_COURSE_META, true ) !== $course->ID ) {
-			return new WP_Error( 'cr_rest_course_invalid_folder', __( 'Invalid folder ID.' ), array( 'status' => 404 ) );
+			return new WP_Error( 'cr_rest_course_invalid_folder', __( 'Invalid folder ID.', 'course-resources' ), array( 'status' => 404 ) );
 		}
 	}
 
@@ -547,7 +547,7 @@ function cr_rest_set_file_fields( $response, $file )
  */
 function cr_get_course( $id )
 {
-	$error = new WP_Error( 'cr_rest_course_invalid_id', __( 'Invalid course ID.' ), array( 'status' => 404 ) ); // FIXME: text domain
+	$error = new WP_Error( 'cr_rest_course_invalid_id', __( 'Invalid course ID.', 'course-resources' ), array( 'status' => 404 ) );
 
 	if ( (int) $id <= 0 ) {
 		return $error;
@@ -569,7 +569,7 @@ function cr_get_course( $id )
  */
 function cr_get_parent_folder( $id )
 {
-	$error = new WP_Error( 'cr_rest_term_invalid_id', __( 'Invalid parent folder ID.' ), array( 'status' => 404 ) ); // FIXME: text domain
+	$error = new WP_Error( 'cr_rest_term_invalid_id', __( 'Invalid parent folder ID.', 'course-resources' ), array( 'status' => 404 ) );
 
 	if ( (int) $id == 0 ) {
 		return 0;

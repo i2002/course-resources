@@ -1,15 +1,12 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
+import { __, _n } from '@wordpress/i18n';
 import wp from '../../lib/wp-types';
 import StudentEnrolmentDialog from './dialogs/StudentEntrolmentDialog';
 
 type Props = {
 	courseId: number;
 };
-
-function isEmail(email: string) {
-	return /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(email);
-}
 
 export default function StudentEnrolmentApp({ courseId }: Props) {
 	const [emails, setEmails] = useState<string[]>([]);
@@ -25,7 +22,9 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			.then((course) => {
 				setEmails(course.meta.cr_course_students);
 			})
-			.catch(() => setError('Eroare la încărcare date.'))
+			.catch(() =>
+				setError(__('Error loading student data.', 'course-resources'))
+			)
 			.finally(() => setLoading(false));
 	}, [courseId]);
 
@@ -42,7 +41,9 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			},
 		})
 			.then((course) => setEmails(course.meta.cr_course_students))
-			.catch(() => setError('Eroare la actualizare studenți.'))
+			.catch(() =>
+				setError(__('Error updating student data.', 'course-resources'))
+			)
 			.finally(() => setLoading(false));
 	};
 
@@ -57,7 +58,15 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 			<p
 				className={`tw-text-base tw-p-1 ${loading ? 'tw-text-slate-500' : 'tw-text-slate-900'}`}
 			>
-				{`${emails.length} studenți înscriși`}
+				{
+					/* translators: %s number of enrolled students */
+					_n(
+						'%s student enrolled',
+						'%s students enrolled',
+						emails.length,
+						'course-resources'
+					)
+				}
 			</p>
 			<button
 				type="button"
@@ -65,7 +74,7 @@ export default function StudentEnrolmentApp({ courseId }: Props) {
 				onClick={() => setEditDialogOpen(true)}
 				disabled={loading}
 			>
-				Modificare listă studenți
+				{__('Update student list', 'course-resources')}
 			</button>
 			<StudentEnrolmentDialog
 				open={editDialogOpen}

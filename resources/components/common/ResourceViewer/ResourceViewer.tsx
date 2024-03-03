@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import type { Resource } from '../../../lib/file-data-types';
 import ImageViewer from './ImageViewer';
 import PDFViewer from './PDFViewer';
@@ -42,11 +43,11 @@ export default function ResourceViewer({ fileData, onClose }: Props) {
 		<ResourceViewerHeader name={name} onClose={onCloseHandler}>
 			<div className="tw-absolute tw-text-center tw-m-auto tw-top-0 tw-bottom-0 tw-left-0 tw-right-0 tw-max-w-sm tw-h-24 tw-bg-white tw-rounded tw-p-3">
 				<p className="tw-mb-3">
-					Resursa specificată nu poate fi previzualizată.
+					{__('This file cannot be previewed.', 'course-resources')}
 				</p>
 				<a href={resUrl}>
 					<button className="tw-button-primary" color="teal">
-						Descărcare resursă
+						{__('Download file', 'course-resources')}
 					</button>
 				</a>
 			</div>

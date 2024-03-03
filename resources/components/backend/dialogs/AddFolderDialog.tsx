@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { FormEvent } from 'react';
 import InputDialog from '../ui/InputDialog';
 
@@ -19,8 +20,8 @@ export default function AddFolderDialog({ open, setOpen, onSubmit }: Props) {
 	return (
 		<InputDialog
 			open={open}
-			title="Adăugare director nou"
-			submitButtonLabel="Creare director"
+			title={__('Add new folder', 'course-resources')}
+			submitButtonLabel={__('Create folder', 'course-resources')}
 			submitButtonColor="primary"
 			className="tw-max-w-sm"
 			onClose={() => setOpen(false)}
@@ -31,7 +32,7 @@ export default function AddFolderDialog({ open, setOpen, onSubmit }: Props) {
 					type="text"
 					name="name"
 					className="tw-form-input tw-text-sm"
-					placeholder="Nume director"
+					placeholder={__('Folder name', 'course-resources')}
 					onKeyDown={(e) => e.stopPropagation()} // prevent close dialog when input focused
 					required
 				/>

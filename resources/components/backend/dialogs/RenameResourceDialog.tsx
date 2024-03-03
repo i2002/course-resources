@@ -1,4 +1,5 @@
 import { useEffect, useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import type { FormEvent } from 'react';
 import InputDialog from '../ui/InputDialog';
 
@@ -33,8 +34,8 @@ export default function RenameResourceDialog({
 	return (
 		<InputDialog
 			open={open}
-			title="Redenumire resursă"
-			submitButtonLabel="Redenumire"
+			title={__('Rename resource', 'course-resources')}
+			submitButtonLabel={__('Rename', 'course-resources')}
 			submitButtonColor="primary"
 			className="tw-max-w-sm"
 			onClose={() => setOpen(false)}
@@ -46,7 +47,7 @@ export default function RenameResourceDialog({
 					name="name"
 					ref={inputRef}
 					className="tw-form-input tw-text-sm"
-					placeholder="Nume resursă"
+					placeholder={__('Resource name', 'course-resources')}
 					onKeyDown={(e) => e.stopPropagation()} // prevent close dialog when input focused
 					required
 				/>

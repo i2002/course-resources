@@ -1,5 +1,6 @@
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import InputDialog from '../ui/InputDialog';
 
 interface Props {
@@ -45,7 +46,7 @@ export default function StudentEnrolmentDialog({
 			}
 
 			if (!isEmail(email)) {
-				setError('Email invalid');
+				setError(__('Invalid email', 'course-resources'));
 				return;
 			}
 
@@ -90,9 +91,9 @@ export default function StudentEnrolmentDialog({
 	return (
 		<InputDialog
 			open={open}
-			title="Modificare listă studenți"
+			title={__('Change student list', 'course-resources')}
 			submitButtonColor="primary"
-			submitButtonLabel="Salvare modificări"
+			submitButtonLabel={__('Save changes', 'course-resources')}
 			className="tw-h-[85vh] tw-w-[90vw]"
 			onClose={() => setOpen(false)}
 			submitHandler={submitHandler}
@@ -100,7 +101,10 @@ export default function StudentEnrolmentDialog({
 			<div className="tw-grid tw-grid-rows-[auto_minmax(50px,1fr)_auto] tw-overflow-y-hidden tw-p-1">
 				<div className="tw-my-3">
 					<input
-						placeholder="Type or paste email addresses and press `Enter`"
+						placeholder={__(
+							'Type or paste email addresses and press `Enter`',
+							'course-resources'
+						)}
 						className={
 							error ? 'tw-form-input-error' : 'tw-form-input'
 						}
@@ -134,7 +138,7 @@ export default function StudentEnrolmentDialog({
 								}
 							>
 								<XMarkIcon
-									title="Eliminare"
+									title={__('Remove', 'course-resources')}
 									className="tw-h-full"
 								/>
 							</button>
@@ -146,7 +150,7 @@ export default function StudentEnrolmentDialog({
 					className="tw-text-sm hover:tw-shadow hover:tw-bg-red-100 tw-px-2 tw-py-1 tw-mt-2 tw-rounded"
 					onClick={() => setEmails([])}
 				>
-					Clear all
+					{__('Clear all', 'course-resources')}
 				</button>
 			</div>
 		</InputDialog>

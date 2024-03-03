@@ -6,6 +6,7 @@ import {
 	useReducer,
 	useState,
 } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import type { Resource, ResourcePath } from '../../../lib/file-data-types';
 import {
 	addFolderAction,
@@ -135,7 +136,7 @@ export const FileManagerProvider = ({ children, courseId }: ProviderProps) => {
 			const nameList = resources.map((res) => res.name);
 
 			if (nameList.includes(name)) {
-				setError('Nume folder deja existent.');
+				setError(__('Folder name already exists.', 'course-resources'));
 				return;
 			}
 
@@ -179,7 +180,7 @@ export const FileManagerProvider = ({ children, courseId }: ProviderProps) => {
 			const nameList = resources.map((res) => res.name);
 
 			if (nameList.includes(newName)) {
-				setError('Nume deja existent.');
+				setError(__('Name already exists.', 'course-resources'));
 				return;
 			}
 

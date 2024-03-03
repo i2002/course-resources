@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 import { AuthLoader } from '../root/RootLayout';
 
@@ -28,7 +29,7 @@ export default function AccountOptionsMenu({ className }: Props) {
 			<Menu.Button
 				className={`tw-inline-flex tw-w-full tw-justify-center tw-items-center tw-rounded-md ${className}`}
 			>
-				{user.email ?? 'Utilizator'}
+				{user.email ?? __('User', 'course_resources')}
 				<ChevronDownIcon
 					className="tw-ml-1 -tw-mr-1 tw-h-5 tw-w-5"
 					aria-hidden="true"
@@ -48,7 +49,7 @@ export default function AccountOptionsMenu({ className }: Props) {
 						onClick={() => signOut()}
 						className="ui-active:tw-bg-teal-500 ui-active:tw-text-white ui-not-active:tw-text-gray-900 tw-cursor-pointer tw-flex tw-w-full tw-items-center tw-rounded-md tw-px-2 tw-py-2 tw-text-sm"
 					>
-						Deconectare
+						{__('Log out', 'course-resources')}
 					</Menu.Item>
 				</Menu.Items>
 			</Transition>

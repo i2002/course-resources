@@ -1,5 +1,6 @@
 import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { Fragment } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { useRouteLoaderData } from 'react-router-dom';
 import Header from '../../header/Header';
 import { CourseLoader } from '../CourseView';
@@ -27,13 +28,13 @@ export default function FolderLoading() {
 				<div className="tw-text-sm tw-text-slate-500">
 					<div className="tw-py-2.5 tw-px-3 tw-grid tw-grid-cols-[1fr_100px_100px] tw-items-center tw-gap-2 tw-text-sm tw-border-b tw-border-slate-300 tw-font-bold tw-text-slate-500">
 						<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-							Nume
+							{__('Name', 'course-resources')}
 						</span>
 						<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-							Dimensiune
+							{__('Size', 'course-resources')}
 						</span>
 						<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-							Modificat la
+							{__('Last updated', 'course-resources')}
 						</span>
 					</div>
 					{[...Array(nrRows)].map((e, i) => (

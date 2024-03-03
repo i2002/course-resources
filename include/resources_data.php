@@ -23,27 +23,27 @@ function cr_register_custom_types()
 		CR_COURSE_TYPE,
 		array(
 			'labels'               => array(
-				'name'                     => __( 'Courses', CR_TEXT_DOMAIN ),
-				'singular_name'            => __( 'Course', CR_TEXT_DOMAIN ),
-				'add_new'                  => _x( 'Add New', 'course', CR_TEXT_DOMAIN ),
-				'add_new_item'             => __( 'Add New Course', CR_TEXT_DOMAIN ),
-				'edit_item'                => __( 'Edit Course', CR_TEXT_DOMAIN ),
-				'new_item'                 => __( 'New Course', CR_TEXT_DOMAIN ),
-				'view_item'                => __( 'View Course', CR_TEXT_DOMAIN ),
-				'view_items'               => __( 'View Courses', CR_TEXT_DOMAIN ),
-				'search_items'             => __( 'Search Courses', CR_TEXT_DOMAIN ),
-				'not_found'                => __( 'No courses found', CR_TEXT_DOMAIN ),
-				'not_found_in_trash'       => __( 'No courses found in Trash', CR_TEXT_DOMAIN ),
-				// 'all_items'                => __( 'All Courses', CR_TEXT_DOMAIN),
-				'archives'                 => __( 'Course Archives', CR_TEXT_DOMAIN ),
-				'attributes'               => __( 'Course Attributes', CR_TEXT_DOMAIN ),
-				'insert_into_item'         => __( 'Insert into course', CR_TEXT_DOMAIN ),
-				'uploaded_to_this_item'    => __( 'Uploaded to this course', CR_TEXT_DOMAIN ),
-				'item_published'           => __( 'Course published', CR_TEXT_DOMAIN ),
-				'item_published_privately' => __( 'Course published privately', CR_TEXT_DOMAIN ),
-				'item_reverted_to_draft'   => __( 'Course reverted to draft', CR_TEXT_DOMAIN ),
-				'item_scheduled'           => __( 'Course scheduled', CR_TEXT_DOMAIN ),
-				'item_updated'             => __( 'Course updated', CR_TEXT_DOMAIN ),
+				'name'                     => __( 'Courses', 'course-resources' ),
+				'singular_name'            => __( 'Course', 'course-resources' ),
+				'add_new'                  => _x( 'Add New', 'course', 'course-resources' ),
+				'add_new_item'             => __( 'Add New Course', 'course-resources' ),
+				'edit_item'                => __( 'Edit Course', 'course-resources' ),
+				'new_item'                 => __( 'New Course', 'course-resources' ),
+				'view_item'                => __( 'View Course', 'course-resources' ),
+				'view_items'               => __( 'View Courses', 'course-resources' ),
+				'search_items'             => __( 'Search Courses', 'course-resources' ),
+				'not_found'                => __( 'No courses found', 'course-resources' ),
+				'not_found_in_trash'       => __( 'No courses found in Trash', 'course-resources' ),
+				// 'all_items'                => __( 'All Courses', 'course-resources'),
+				'archives'                 => __( 'Course Archives', 'course-resources' ),
+				'attributes'               => __( 'Course Attributes', 'course-resources' ),
+				'insert_into_item'         => __( 'Insert into course', 'course-resources' ),
+				'uploaded_to_this_item'    => __( 'Uploaded to this course', 'course-resources' ),
+				'item_published'           => __( 'Course published', 'course-resources' ),
+				'item_published_privately' => __( 'Course published privately', 'course-resources' ),
+				'item_reverted_to_draft'   => __( 'Course reverted to draft', 'course-resources' ),
+				'item_scheduled'           => __( 'Course scheduled', 'course-resources' ),
+				'item_updated'             => __( 'Course updated', 'course-resources' ),
 			),
 			'public'               => false,
 			'publicly_queryable'   => false,
@@ -70,9 +70,9 @@ function cr_register_custom_types()
 	) );
 
 	register_post_meta( CR_FILE_TYPE, CR_FILE_MIME_META, array(
-		'type' => 'string',
-		'single' => true,
-		'show_in_rest' => true,
+		'type'              => 'string',
+		'single'            => true,
+		'show_in_rest'      => true,
 		'revisions_enabled' => false
 	) );
 
@@ -96,10 +96,10 @@ function cr_register_custom_types()
 	// folder
 	register_taxonomy( CR_FOLDER_TAX, CR_FILE_TYPE, array(
 		'labels'                => array(
-			'name'              => __( 'Folders', CR_TEXT_DOMAIN ),
-			'singular_name'     => __( 'Folder', CR_TEXT_DOMAIN )
+			'name'              => __( 'Folders', 'course-resources' ),
+			'singular_name'     => __( 'Folder', 'course-resources' )
 		),
-		'description'           => __( 'Allows organizing uploaded files in folders', CR_TEXT_DOMAIN ),
+		'description'           => __( 'Allows organizing uploaded files in folders', 'course-resources' ),
 		'hierarchical'          => true,
 		'public'                => false,
 		'show_ui'               => false,

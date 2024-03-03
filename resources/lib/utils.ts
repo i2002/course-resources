@@ -1,3 +1,4 @@
+import { getLocaleData } from '@wordpress/i18n';
 import type { Resource } from './file-data-types';
 
 /**
@@ -47,7 +48,7 @@ export function getResDate(
 	}
 
 	return new Date(updatedAt).toLocaleString(
-		'ro-RO',
+		getLocaleData('course-resources')[''].lang as string,
 		context === 'display'
 			? {
 					year: 'numeric',

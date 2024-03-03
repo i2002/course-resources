@@ -1,4 +1,5 @@
 import { Dialog } from '@headlessui/react';
+import { __ } from '@wordpress/i18n';
 import type { FormEvent } from 'react';
 
 interface Props {
@@ -49,7 +50,7 @@ export default function InputDialog({
 								className="tw-button-neutral"
 								onClick={() => onClose()}
 							>
-								Renunțare
+								{__('Cancel', 'course-resources')}
 							</button>
 							<button
 								type="submit"

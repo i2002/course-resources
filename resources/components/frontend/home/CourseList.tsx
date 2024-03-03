@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import type { Course } from '../../../lib/file-data-types';
 
@@ -19,6 +20,8 @@ export default function CourseList({ courses }: Props) {
 			))}
 		</nav>
 	) : (
-		<span>You do not have access to any course.</span>
+		<span>
+			{__('You are not enrolled to any course.', 'course-resources')}
+		</span>
 	);
 }

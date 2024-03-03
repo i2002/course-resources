@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import Header from '../header/Header';
 
 const nrRows = 3;
@@ -5,7 +6,7 @@ const nrRows = 3;
 export default function HomeLoading() {
 	return (
 		<>
-			<Header title="Cursuri"></Header>
+			<Header title={__('Courses', 'course-resources')}></Header>
 			<nav className="tw-flex tw-flex-col">
 				{[...Array(nrRows)].map((_, i) => (
 					<div

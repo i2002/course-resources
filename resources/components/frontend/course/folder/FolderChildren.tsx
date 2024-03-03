@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Link } from 'react-router-dom';
 import type { Resource } from '../../../../lib/file-data-types';
 import { getResDate, getResSize } from '../../../../lib/utils';
@@ -13,13 +14,13 @@ export default function FolderChildren({ courseId, folderChildren }: Props) {
 		<div className="tw-text-sm tw-text-slate-500">
 			<div className="tw-py-2.5 tw-px-3 tw-grid tw-grid-cols-[1fr_100px_100px] tw-items-center tw-gap-2 tw-text-sm tw-border-b tw-border-slate-300 tw-font-bold tw-text-slate-500">
 				<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-					Nume
+					{__('Name', 'course-resources')}
 				</span>
 				<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-					Dimensiune
+					{__('Size', 'course-resources')}
 				</span>
 				<span className="tw-whitespace-nowrap tw-text-left tw-font-semibold tw-text-slate-600">
-					Modificat la
+					{__('Last updated', 'course-resources')}
 				</span>
 			</div>
 			{folderChildren.map((resource) => (
@@ -48,7 +49,7 @@ export default function FolderChildren({ courseId, folderChildren }: Props) {
 			))}
 			{folderChildren.length === 0 && (
 				<div className="tw-text-slate-400 tw-text-sm tw-text-center tw-py-6">
-					Acest folder nu conține niciun fișier.
+					{__('This folder is empty.', 'course-resources')}
 				</div>
 			)}
 		</div>

@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import {
 	Link,
 	useNavigate,
@@ -16,30 +17,50 @@ export default function AppError() {
 	const userData = useRouteLoaderData('root');
 	const courseData = useRouteLoaderData('course') as CourseLoader;
 
-	let title = 'Eroare la încărcarea paginii';
-	let message = 'A apărut o eroare la încărcarea paginii';
+	let title = __('Error loading page', 'course-resources');
+	let message = __(
+		'An error has occured while loading the page',
+		'course-resources'
+	);
 	let linkTo = '/';
-	let linkLabel = 'Înapoi la lista de cursuri';
+	let linkLabel = __('Back to course list', 'course-resources');
 
-	if (error.status === 404 || (error.data && error.data.status === 404)) {
-		title = 'Conținut indexistent';
-		message = 'Pagina specificată nu a fost găsită.';
+	if (
+		error.status === 404 ||
+		(error.data && (error.data.status === 404 || error.data.state === 404))
+	) {
+		title = __('Content not found', 'course-resources');
+		message = __(
+			'The requested page could not be found.',
+			'course-resources'
+		);
 
-		if (error.code === 'rest_term_invalid_id') {
-			message = 'Folder-ul specificat nu există.';
+		if (
+			error.code === 'rest_term_invalid_id' ||
+			error.code === 'cr_rest_term_invalid_id'
+		) {
+			message = __(
+				'Requested folder does not exist.',
+				'course-resources'
+			);
 		}
 
 		if (params.courseId) {
 			linkTo = `/course/${params.courseId}`;
-			linkLabel = 'Înapoi la pagina cursului';
+			linkLabel = __('Back to course page', 'course-resources');
 		}
 	} else if (error.code === 'invalid_json') {
-		title = 'Eroare la încărcare date';
-		message =
-			'A apărut o eroare la încărcarea datelor. Reîncercați după câteva momente.';
+		title = __('Error loading data', 'course-resources');
+		message = __(
+			'An error has occured while loading data. Please try again later.',
+			'course-resources'
+		);
 	} else if (error.code === 'cr_rest_forbidden') {
-		title = 'Access restricționat';
-		message = 'Nu ai permisiune de a accesa acest curs.';
+		title = __('Access denied', 'course-resources');
+		message = __(
+			'You are not enrolled to this course.',
+			'course-resources'
+		);
 	}
 
 	useEffect(() => {

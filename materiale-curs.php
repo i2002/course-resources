@@ -19,7 +19,6 @@ require_once __DIR__ . '/include/resources_data.php';
 require_once __DIR__ . '/include/rest.php';
 
 // Plugin defines
-define( 'CR_TEXT_DOMAIN', 'course-resources' );
 define( 'CR_ADMIN_MENU', 'course-resources-admin-menu' );
 
 // Plugin activation hook
@@ -42,6 +41,9 @@ function cr_plugin_deactivation()
 {
 	wp_clear_scheduled_hook( 'cr_clean_login_links' );
 }
+
+// Load text domain
+add_action( 'init', 'cr_load_text_domain' );
 
 // Enqueue assets
 add_action( 'admin_enqueue_scripts', 'cr_enqueue_admin_assets' );
@@ -85,6 +87,17 @@ add_action( 'rest_api_init', 'cr_rest_init' );
 
 // Register Frontend UI shortcode
 add_action( 'init', 'cr_frontend_shortcode' );
+
+/**
+ * Load plugin translations.
+ *
+ * @since 0.1.0
+ */
+function cr_load_text_domain()
+{
+	load_plugin_textdomain( 'course-resources', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+}
+
 
 /**
  * Enqueue admin assets.

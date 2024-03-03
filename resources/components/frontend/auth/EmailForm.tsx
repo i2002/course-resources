@@ -1,5 +1,6 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useContext, useRef, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from './LoginContext';
@@ -54,7 +55,7 @@ export default function EmailForm() {
 					required
 					type="email"
 					name="email"
-					placeholder="Adresă email"
+					placeholder={__('Email address', 'course-resources')}
 					className="tw-form-input"
 					ref={emailRef}
 					disabled={loading}
@@ -65,7 +66,7 @@ export default function EmailForm() {
 				disabled={loading}
 				type="submit"
 			>
-				Conectare cu adresă email
+				{__('Login with email address', 'course-resources')}
 			</button>
 		</form>
 	);
