@@ -4,3 +4,7 @@ vendor/
 
 # build
 build/
+
+# generated translation files
+lang/*.mo
+lang/*.json

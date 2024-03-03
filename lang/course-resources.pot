@@ -1,0 +1,600 @@
+# Copyright (C) 2024 Tudor Butufei
+# This file is distributed under the MIT.
+msgid ""
+msgstr ""
+"Project-Id-Version: Course resources 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/materiale-curs-wordpress\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-03-03T22:02:25+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.9.0\n"
+"X-Domain: course-resources\n"
+
+#. Plugin Name of the plugin
+#: include/admin.php:15
+#: include/admin.php:16
+msgid "Course resources"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://www.github.com/i2002/course-resources"
+msgstr ""
+
+#. Description of the plugin
+msgid "Manage course files and student access."
+msgstr ""
+
+#. Author of the plugin
+msgid "Tudor Butufei"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.github.com/i2002/"
+msgstr ""
+
+#: include/admin.php:26
+msgid "Course resources - Options"
+msgstr ""
+
+#: include/admin.php:27
+msgid "Options"
+msgstr ""
+
+#: include/admin.php:51
+msgid "Course files"
+msgstr ""
+
+#: include/admin.php:59
+msgid "Student enrolment"
+msgstr ""
+
+#: include/admin.php:76
+msgid "Duration in seconds of login token validity"
+msgstr ""
+
+#: include/admin.php:83
+msgid "Duration in seconds of email login link validity"
+msgstr ""
+
+#: include/admin.php:90
+msgid "Duration in seconds before requesting another login email"
+msgstr ""
+
+#: include/admin.php:98
+msgid "Security"
+msgstr ""
+
+#: include/admin.php:106
+msgid "Login expiration time"
+msgstr ""
+
+#: include/admin.php:113
+msgid "How long a session is valid until a new sign in is required (value in seconds)"
+msgstr ""
+
+#: include/admin.php:119
+msgid "Revoke login tokens"
+msgstr ""
+
+#: include/admin.php:130
+msgid "Login email expiration time"
+msgstr ""
+
+#: include/admin.php:137
+msgid "How long is the login email valid (value in seconds)"
+msgstr ""
+
+#: include/admin.php:143
+msgid "Login request cooldown"
+msgstr ""
+
+#: include/admin.php:150
+msgid "Minimum time between two consecutive login emails sent (value in seconds)"
+msgstr ""
+
+#: include/admin.php:156
+msgid "Revoke sent login links"
+msgstr ""
+
+#: include/admin.php:179
+msgid "Settings related to student login"
+msgstr ""
+
+#: include/admin.php:228
+msgid "Force logout all connected users"
+msgstr ""
+
+#: include/admin.php:254
+msgid "Invalidate all login emails sent"
+msgstr ""
+
+#: include/admin.php:292
+msgid "Settings updated"
+msgstr ""
+
+#: include/admin.php:303
+msgid "Save Settings"
+msgstr ""
+
+#: include/auth.php:191
+msgid "The provided email address is not enrolled in any course."
+msgstr ""
+
+#: include/auth.php:196
+msgid "An email has already been sent."
+msgstr ""
+
+#: include/auth.php:206
+msgid "Failed to send email. Please try again later."
+msgstr ""
+
+#: include/auth.php:226
+msgid "Sign in to Course resources requested"
+msgstr ""
+
+#: include/auth.php:229
+msgid "Hello,"
+msgstr ""
+
+#: include/auth.php:230
+msgid "We received a request to sign in to Course resources using this email address."
+msgstr ""
+
+#. translators: %s: User email address
+#: include/auth.php:232
+msgid "If you want to sign in with your %s account, click this link:"
+msgstr ""
+
+#: include/auth.php:234
+msgid "If you did not request this link, you can safely ignore this email."
+msgstr ""
+
+#: include/resources_data.php:26
+#: build/frontend.js:1903
+#: build/frontend.js:1981
+msgid "Courses"
+msgstr ""
+
+#: include/resources_data.php:27
+msgid "Course"
+msgstr ""
+
+#: include/resources_data.php:28
+msgctxt "course"
+msgid "Add New"
+msgstr ""
+
+#: include/resources_data.php:29
+msgid "Add New Course"
+msgstr ""
+
+#: include/resources_data.php:30
+msgid "Edit Course"
+msgstr ""
+
+#: include/resources_data.php:31
+msgid "New Course"
+msgstr ""
+
+#: include/resources_data.php:32
+msgid "View Course"
+msgstr ""
+
+#: include/resources_data.php:33
+msgid "View Courses"
+msgstr ""
+
+#: include/resources_data.php:34
+msgid "Search Courses"
+msgstr ""
+
+#: include/resources_data.php:35
+msgid "No courses found"
+msgstr ""
+
+#: include/resources_data.php:36
+msgid "No courses found in Trash"
+msgstr ""
+
+#: include/resources_data.php:38
+msgid "Course Archives"
+msgstr ""
+
+#: include/resources_data.php:39
+msgid "Course Attributes"
+msgstr ""
+
+#: include/resources_data.php:40
+msgid "Insert into course"
+msgstr ""
+
+#: include/resources_data.php:41
+msgid "Uploaded to this course"
+msgstr ""
+
+#: include/resources_data.php:42
+msgid "Course published"
+msgstr ""
+
+#: include/resources_data.php:43
+msgid "Course published privately"
+msgstr ""
+
+#: include/resources_data.php:44
+msgid "Course reverted to draft"
+msgstr ""
+
+#: include/resources_data.php:45
+msgid "Course scheduled"
+msgstr ""
+
+#: include/resources_data.php:46
+msgid "Course updated"
+msgstr ""
+
+#: include/resources_data.php:99
+msgid "Folders"
+msgstr ""
+
+#: include/resources_data.php:100
+msgid "Folder"
+msgstr ""
+
+#: include/resources_data.php:102
+msgid "Allows organizing uploaded files in folders"
+msgstr ""
+
+#: include/rest.php:129
+msgid "Invalid file ID"
+msgstr ""
+
+#: include/rest.php:150
+msgid "Sorry, you are not allowed to create files as this user."
+msgstr ""
+
+#: include/rest.php:158
+msgid "Sorry, you are not allowed to upload files on this site."
+msgstr ""
+
+#: include/rest.php:166
+msgid "Sorry, you are not allowed to upload files to this course."
+msgstr ""
+
+#: include/rest.php:214
+msgid "File parent required."
+msgstr ""
+
+#: include/rest.php:219
+msgid "Invalid parent folder."
+msgstr ""
+
+#: include/rest.php:224
+msgid "Course ID required."
+msgstr ""
+
+#: include/rest.php:226
+msgid "Invalid course."
+msgstr ""
+
+#: include/rest.php:230
+msgid "File title required."
+msgstr ""
+
+#: include/rest.php:333
+msgid "Bad request"
+msgstr ""
+
+#: include/rest.php:340
+msgid "Email invalid"
+msgstr ""
+
+#: include/rest.php:389
+#: include/rest.php:425
+#: include/rest.php:453
+msgid "You need to log in to access this."
+msgstr ""
+
+#: include/rest.php:459
+msgid "You are not enrolled in this course."
+msgstr ""
+
+#: include/rest.php:507
+msgid "Invalid folder ID."
+msgstr ""
+
+#: include/rest.php:550
+msgid "Invalid course ID."
+msgstr ""
+
+#: include/rest.php:572
+msgid "Invalid parent folder ID."
+msgstr ""
+
+#: build/backend.js:139
+msgid "None selected"
+msgstr ""
+
+#. translators: %s number of selected resources
+#: build/backend.js:140
+msgid "%s selected"
+msgid_plural "%s selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/backend.js:145
+#: build/frontend.js:1460
+#: build/frontend.js:1546
+msgid "Name"
+msgstr ""
+
+#: build/backend.js:147
+#: build/frontend.js:1463
+#: build/frontend.js:1549
+msgid "Size"
+msgstr ""
+
+#: build/backend.js:149
+#: build/frontend.js:1466
+#: build/frontend.js:1552
+msgid "Last updated"
+msgstr ""
+
+#: build/backend.js:182
+#: build/frontend.js:1487
+msgid "This folder is empty."
+msgstr ""
+
+#: build/backend.js:303
+msgid "Folder name already exists."
+msgstr ""
+
+#: build/backend.js:325
+msgid "Name already exists."
+msgstr ""
+
+#: build/backend.js:398
+msgid "Error:"
+msgstr ""
+
+#: build/backend.js:403
+msgid "Hide"
+msgstr ""
+
+#: build/backend.js:533
+msgid "Root folder"
+msgstr ""
+
+#: build/backend.js:564
+#: build/backend.js:1529
+msgid "Cancel"
+msgstr ""
+
+#: build/backend.js:569
+msgid "Move here"
+msgstr ""
+
+#: build/backend.js:573
+msgid "New folder"
+msgstr ""
+
+#: build/backend.js:589
+#: build/backend.js:593
+msgid "Upload file"
+msgstr ""
+
+#: build/backend.js:598
+#: build/backend.js:1325
+msgid "Rename resource"
+msgstr ""
+
+#: build/backend.js:605
+msgid "Move selection"
+msgstr ""
+
+#: build/backend.js:612
+#: build/backend.js:1267
+msgid "Delete selection"
+msgstr ""
+
+#: build/backend.js:1143
+msgid "Error loading student data."
+msgstr ""
+
+#: build/backend.js:1156
+msgid "Error updating student data."
+msgstr ""
+
+#. translators: %s number of enrolled students
+#: build/backend.js:1166
+msgid "%s student enrolled"
+msgid_plural "%s students enrolled"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/backend.js:1172
+msgid "Update student list"
+msgstr ""
+
+#: build/backend.js:1216
+msgid "Add new folder"
+msgstr ""
+
+#: build/backend.js:1217
+msgid "Create folder"
+msgstr ""
+
+#: build/backend.js:1228
+msgid "Folder name"
+msgstr ""
+
+#: build/backend.js:1266
+msgid "Delete selection confirmation"
+msgstr ""
+
+#: build/backend.js:1276
+msgid "All selected files and folders will be permanently deleted."
+msgstr ""
+
+#: build/backend.js:1326
+msgid "Rename"
+msgstr ""
+
+#: build/backend.js:1338
+msgid "Resource name"
+msgstr ""
+
+#: build/backend.js:1398
+msgid "Invalid email"
+msgstr ""
+
+#: build/backend.js:1430
+msgid "Change student list"
+msgstr ""
+
+#: build/backend.js:1432
+msgid "Save changes"
+msgstr ""
+
+#: build/backend.js:1441
+msgid "Type or paste email addresses and press `Enter`"
+msgstr ""
+
+#: build/backend.js:1464
+msgid "Remove"
+msgstr ""
+
+#: build/backend.js:1473
+msgid "Clear all"
+msgstr ""
+
+#: build/backend.js:1873
+#: build/frontend.js:295
+msgid "Zoom out"
+msgstr ""
+
+#: build/backend.js:1879
+#: build/frontend.js:301
+msgid "Reset zoom"
+msgstr ""
+
+#: build/backend.js:1895
+#: build/frontend.js:317
+msgid "Zoom in"
+msgstr ""
+
+#: build/backend.js:2153
+#: build/frontend.js:575
+msgid "This file cannot be previewed."
+msgstr ""
+
+#: build/backend.js:2159
+#: build/frontend.js:581
+msgid "Download file"
+msgstr ""
+
+#: build/backend.js:2208
+#: build/frontend.js:630
+msgid "Close"
+msgstr ""
+
+#: build/frontend.js:975
+msgid "Email address"
+msgstr ""
+
+#: build/frontend.js:984
+msgid "Login with email address"
+msgstr ""
+
+#: build/frontend.js:1063
+msgid "An email has already been sent to the specified email address. If you didn't receive the email try again in a minute."
+msgstr ""
+
+#: build/frontend.js:1065
+msgid "The login email couldn't be sent."
+msgstr ""
+
+#: build/frontend.js:1067
+msgid "The email address is not enrolled in any course."
+msgstr ""
+
+#: build/frontend.js:1069
+msgid "Login link expired or already used."
+msgstr ""
+
+#: build/frontend.js:1071
+msgid "Internal server error while logging in."
+msgstr ""
+
+#: build/frontend.js:1078
+#: build/frontend.js:1084
+msgid "Login failed"
+msgstr ""
+
+#: build/frontend.js:1090
+msgid "Login link sent"
+msgstr ""
+
+#. translators: %s user email address
+#: build/frontend.js:1092
+msgid "Login link sent to email address: %s"
+msgstr ""
+
+#: build/frontend.js:1215
+msgid "Student login"
+msgstr ""
+
+#: build/frontend.js:1796
+msgid "Log out"
+msgstr ""
+
+#: build/frontend.js:1876
+msgid "You are not enrolled to any course."
+msgstr ""
+
+#: build/frontend.js:2019
+msgid "Error loading page"
+msgstr ""
+
+#: build/frontend.js:2020
+msgid "An error has occured while loading the page"
+msgstr ""
+
+#: build/frontend.js:2022
+msgid "Back to course list"
+msgstr ""
+
+#: build/frontend.js:2024
+msgid "Content not found"
+msgstr ""
+
+#: build/frontend.js:2025
+msgid "The requested page could not be found."
+msgstr ""
+
+#: build/frontend.js:2027
+msgid "Requested folder does not exist."
+msgstr ""
+
+#: build/frontend.js:2031
+msgid "Back to course page"
+msgstr ""
+
+#: build/frontend.js:2034
+msgid "Error loading data"
+msgstr ""
+
+#: build/frontend.js:2035
+msgid "An error has occured while loading data. Please try again later."
+msgstr ""
+
+#: build/frontend.js:2037
+msgid "Access denied"
+msgstr ""
+
+#: build/frontend.js:2038
+msgid "You are not enrolled to this course."
+msgstr ""
