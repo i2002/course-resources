@@ -8,7 +8,7 @@ interface Props {
 
 export default function ImageViewer({ name, resUrl, onClose }: Props) {
 	return (
-		<ResourceViewerHeader name={name} onClose={onClose}>
+		<ResourceViewerHeader name={name} url={resUrl} onClose={onClose}>
 			<div className="tw-relative tw-h-screen tw-w-full">
 				<img
 					alt={name}

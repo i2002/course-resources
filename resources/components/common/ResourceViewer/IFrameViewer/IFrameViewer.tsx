@@ -8,7 +8,7 @@ interface Props {
 
 export default function IFrameViewer({ name, resUrl, onClose }: Props) {
 	return (
-		<ResourceViewerHeader name={name} onClose={onClose}>
+		<ResourceViewerHeader name={name} url={resUrl} onClose={onClose}>
 			<iframe
 				title={name}
 				src={resUrl}

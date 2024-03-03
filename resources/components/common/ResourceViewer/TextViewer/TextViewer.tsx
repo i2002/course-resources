@@ -25,7 +25,7 @@ export default function TextViewer({ name, resUrl, onClose }: Props) {
 	});
 
 	return (
-		<ResourceViewerHeader name={name} onClose={onClose}>
+		<ResourceViewerHeader name={name} url={resUrl} onClose={onClose}>
 			{loading && (
 				<div
 					role="status"

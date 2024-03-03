@@ -14,6 +14,7 @@ export default function PDFViewer({ name, resUrl, onClose }: Props) {
 		<PDFViewerProvider>
 			<ResourceViewerHeader
 				name={name}
+				url={resUrl}
 				toolbar={<PDFViewerToolbar />}
 				onClose={onClose}
 			>

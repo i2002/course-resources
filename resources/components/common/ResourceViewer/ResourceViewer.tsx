@@ -40,7 +40,7 @@ export default function ResourceViewer({ fileData, onClose }: Props) {
 		);
 	}
 	return (
-		<ResourceViewerHeader name={name} onClose={onCloseHandler}>
+		<ResourceViewerHeader name={name} url={resUrl} onClose={onCloseHandler}>
 			<div className="tw-absolute tw-text-center tw-m-auto tw-top-0 tw-bottom-0 tw-left-0 tw-right-0 tw-max-w-sm tw-h-24 tw-bg-white tw-rounded tw-p-3">
 				<p className="tw-mb-3">
 					{__('This file cannot be previewed.', 'course-resources')}
