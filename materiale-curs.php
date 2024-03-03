@@ -46,6 +46,8 @@ function cr_plugin_deactivation()
 add_action( 'init', 'cr_load_text_domain' );
 
 // Enqueue assets
+add_action( 'init', 'cr_register_assets' );
+
 add_action( 'admin_enqueue_scripts', 'cr_enqueue_admin_assets' );
 
 // Register admin view
@@ -98,6 +100,40 @@ function cr_load_text_domain()
 	load_plugin_textdomain( 'course-resources', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 }
 
+/**
+ * Get built assets data.
+ *
+ * @since 0.1.0
+ *
+ * @param string $name the name of the asset bundle (without file extension)
+ * @return array with the fields:
+ * - path (relative path to the bundle from plugin root, without file extension)
+ * - deps (array with deps required)
+ * - ver (version string)
+ */
+function cr_get_asset_data( $name )
+{
+	$script_path = "/build/$name";
+	$script_data = require __DIR__ . $script_path . '.asset.php';
+
+	return array(
+		'path' => $script_path,
+		'deps' => $script_data['dependencies'],
+		'ver'  => $script_data['version']
+	);
+}
+
+/**
+ * Register vendor assets to be loaded by frontend / backend.
+ *
+ * @since 0.1.0
+ */
+function cr_register_assets()
+{
+	$script = cr_get_asset_data( 'vendors' );
+	wp_register_script( 'cr-vendor-scripts', plugins_url( $script['path'] . ".js", __FILE__ ), $script['deps'], $script['ver'], true );
+	wp_register_style( 'cr-vendor-styles', plugins_url( $script['path'] . ".css", __FILE__ ), array(), $script['ver'] );
+}
 
 /**
  * Enqueue admin assets.
@@ -107,14 +143,13 @@ function cr_load_text_domain()
 function cr_enqueue_admin_assets()
 {
 	$screen = get_current_screen();
-
-	$plugin_url = plugin_dir_url( __FILE__ );
-	$assets = require __DIR__ . '/build/backend.asset.php';
-
 	if ( $screen->base == 'post' && $screen->post_type == CR_COURSE_TYPE && $screen->action == '' ) {
-		wp_enqueue_script( 'cr-admin-scripts', $plugin_url . '/build/backend.js', $assets['dependencies'], $assets['version'], true );
-		wp_enqueue_style( 'cr-admin-styles', $plugin_url . '/build/backend.css', 0 );
-		wp_enqueue_media();
+		$script = cr_get_asset_data( 'backend' );
+		$script['deps'][] = 'cr-vendor-scripts';
+
+		wp_enqueue_script( 'cr-admin-scripts', plugins_url( $script['path'] . ".js", __FILE__ ), $script['deps'], $script['ver'], true );
+		wp_set_script_translations( 'cr-admin-scripts', 'course-resources', plugin_dir_path( __FILE__ ) . '/lang' );
+		wp_enqueue_style( 'cr-admin-styles', plugins_url( $script['path'] . ".css", __FILE__ ), array( 'cr-vendor-styles' ), $script['ver'] );
 	}
 }
 
@@ -125,10 +160,12 @@ function cr_enqueue_admin_assets()
  */
 function cr_enqueue_frontend_assets()
 {
-	$plugin_url = plugin_dir_url( __FILE__ );
-	$assets = require __DIR__ . '/build/frontend.asset.php';
-	wp_enqueue_script( 'cr-admin-scripts', $plugin_url . '/build/frontend.js', $assets['dependencies'], $assets['version'], true );
-	wp_enqueue_style( 'cr-admin-styles', $plugin_url . '/build/frontend.css', 0 );
+	$script = cr_get_asset_data( 'frontend' );
+	$script['deps'][] = 'cr-vendor-scripts';
+
+	wp_enqueue_script( 'cr-frontend-scripts', plugins_url( $script['path'] . ".js", __FILE__ ), $script['deps'], $script['ver'], true );
+	wp_set_script_translations( 'cr-frontend-scripts', 'course-resources', plugin_dir_path( __FILE__ ) . '/lang' );
+	wp_enqueue_style( 'cr-frontend-styles', plugins_url( $script['path'] . ".css", __FILE__ ), array( 'cr-vendor-styles' ), $script['ver'] );
 }
 
 /**
@@ -145,6 +182,8 @@ function cr_frontend_shortcode()
  * Render frontend UI shortcode.
  *
  * @since 0.1.0
+ *
+ * @return string rendered HTML
  */
 function cr_frontend_render_shortcode()
 {

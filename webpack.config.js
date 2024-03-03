@@ -1,5 +1,6 @@
 // const path = require('path');
 const defaults = require('@wordpress/scripts/config/webpack.config.js');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	...defaults,
@@ -7,7 +8,18 @@ module.exports = {
 		backend: `./resources/scripts/backend.ts`,
 		frontend: `./resources/scripts/frontend.tsx`,
 	},
-	plugins: [...defaults.plugins],
+	plugins: [
+		...defaults.plugins,
+		new CopyPlugin({
+			patterns: [
+				{
+					from: 'pdfjs-dist/cmaps/',
+					to: 'pdfjs-cmaps/',
+					context: 'node_modules',
+				},
+			],
+		}),
+	],
 	module: {
 		...defaults.module,
 		rules: [
@@ -34,5 +46,16 @@ module.exports = {
 				? defaults.resolve.extensions || ['.js', '.jsx']
 				: []),
 		],
+	},
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					chunks: 'all',
+				},
+			},
+		},
 	},
 };

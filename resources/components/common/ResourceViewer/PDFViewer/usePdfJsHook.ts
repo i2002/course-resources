@@ -8,18 +8,25 @@ import { GlobalWorkerOptions } from 'pdfjs-dist';
 
 if (typeof window !== 'undefined' && 'Worker' in window) {
 	GlobalWorkerOptions.workerPort = new Worker(
-		new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url),
+		new URL(
+			/* webpackChunkName: "pdfjs-worker" */ 'pdfjs-dist/build/pdf.worker.mjs',
+			import.meta.url
+		),
 		{ type: 'module' }
 	);
 }
 
 // PDF.js options
-// const CMAP_URL = `${pdfjsAssetsPath}/cmaps/`;
+const assetsUrl =
+	(document.currentScript as HTMLScriptElement | null)?.src ??
+	window.location.href;
+const CMAP_URL = new URL('pdfjs-cmaps/', assetsUrl).href;
 const CMAP_PACKED = true;
 const ENABLE_XFA = true;
 
 const options = {
-	// cMapUrl: CMAP_URL,
+	cMapUrl: CMAP_URL,
+	// cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
 	cMapPacked: CMAP_PACKED,
 	enableXfa: ENABLE_XFA,
 };
