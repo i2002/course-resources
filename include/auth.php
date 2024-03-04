@@ -14,7 +14,7 @@ define( 'CR_OPTION_AUTH_SECRET', 'cr_auth_secret' );
 /**
  * Generate auth secret.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_generate_auth_secret( $length = 20 )
 {
@@ -25,7 +25,7 @@ function cr_generate_auth_secret( $length = 20 )
 /**
  * Generate JWT token.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $user_id    the email of the user
  * @param string $secret_key secret used to encrypt JWT
@@ -48,7 +48,7 @@ function cr_generate_jwt_token( $user_id, $secret_key )
 /**
  * Validate JWT token.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $jwt_token  the token to be validated
  * @param string $secret_key key used to encrypt JWT
@@ -71,7 +71,7 @@ function cr_validate_jwt_token( $jwt_token, $secret_key )
 /**
  * Get the email of currently logged in student.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return string|bool Returns the email of the logged in student, or false if no active login
  */
@@ -94,7 +94,7 @@ function cr_get_current_student()
 /**
  * Get all courses that a student is enrolled to.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email student email
  * @return WP_Post[]
@@ -125,7 +125,7 @@ function cr_get_student_courses( $email )
 /**
  * Check if student is enrolled to course.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email      student email
  * @param int    $course_id  the course to check
@@ -151,7 +151,7 @@ function cr_is_student_enrolled( $email, $course_id )
 /**
  * Verify login using code.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email
  * @param string $code   login code
@@ -173,7 +173,7 @@ function cr_auth_login( $email, $code )
 /**
  * Set user auth cookie.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email
  */
@@ -186,7 +186,7 @@ function cr_set_auth_cookie( $email )
 /**
  * Clear student auth cookie.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_auth_logout()
 {
@@ -198,7 +198,7 @@ function cr_auth_logout()
 /**
  * Generate and send email with login link.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email   user email
  * @param bool   $resend  whether to resend login code if another one still active
@@ -240,7 +240,7 @@ function cr_auth_login_request( $email, $resend )
 /**
  * Send email with login code to specified user.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email the  receiver email
  * @param string $code       login code generated for sign in request
@@ -267,7 +267,7 @@ function cr_send_auth_code( $email, $code )
 /**
  * Set mail text/plain alt body.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param PHPMailer $phpmailer The PHPMailer instance (passed by reference).
  */
@@ -281,7 +281,7 @@ function cr_set_mail_text_body( $phpmailer )
 /**
  * Get the login code associated with email.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email
  * @return array|false returns the login code data if it exists, false otherwise
@@ -300,7 +300,7 @@ function cr_get_login_code( $email )
 /**
  * Create and register login code associated with email.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email
  * @return string the login code generated
@@ -324,7 +324,7 @@ function cr_create_login_code( $email )
 /**
  * Unset login code associated with email.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $email
  */
@@ -341,7 +341,7 @@ function cr_unset_login_code( $email )
 /**
  * Clear expired login codes.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_clean_login_codes()
 {
@@ -357,7 +357,7 @@ function cr_clean_login_codes()
 /**
  * Check if login code is valid.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array  $login_code  stored login code data
  * @param string $code        code sent in the request params
@@ -371,7 +371,7 @@ function cr_validate_login_code( $login_code, $code )
 /**
  * Check if login code has expired.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $login_code  login code data
  * @return bool
@@ -384,7 +384,7 @@ function cr_login_code_expired( $login_code )
 /**
  * Generate login code
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int $length code length
  * @return int

@@ -14,7 +14,7 @@ define( 'CR_FOLDER_UPDATED_META', 'cr_folder_updated_at' );
 /**
  * Register plugin custom post types.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_register_custom_types()
 {
@@ -135,7 +135,7 @@ function cr_register_custom_types()
 /**
  * Delete its files and folders when deleting a course.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int $course_id
  * @param WP_Post $course
@@ -162,7 +162,7 @@ function cr_before_delete_course( $course_id, $course )
 /**
  * Get upload path relative to uploads directory.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int $course_id the id of the parent course
  * @return string
@@ -177,7 +177,7 @@ function cr_file_get_upload_path( $course_id )
  *
  * Returns the physical path or null if errors.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int $file_id
  * @return string|null
@@ -210,7 +210,7 @@ function cr_file_get_path( $file_id )
 /**
  * Get URL of a file.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int $file_id
  * @return string
@@ -223,7 +223,7 @@ function cr_file_get_url( $file_id )
 /**
  * Delete physical file associated with file post type.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int     $file_id
  * @param WP_Post $file
@@ -244,7 +244,7 @@ function cr_before_delete_file( $file_id, $file )
 /**
  * Register file query var.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $vars
  * @return array
@@ -258,7 +258,7 @@ function cr_file_query_var( $vars )
 /**
  * Proxy file requests and check access permissions.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_file_handler()
 {
@@ -315,7 +315,7 @@ function cr_file_handler()
 /**
  * Modify htaccess rules to forbid direct access to files upload folder.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $rules
  * @return string
@@ -340,7 +340,7 @@ RewriteRule .*$ - [F]
  * Trigger parent folder count update after inserting folder.
  * Setup initial value for folder updatedAt timestamp.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int   $term_id Term ID.
  * @param int   $tt_id   Term taxonomy ID.
@@ -364,7 +364,7 @@ function cr_folder_created( $term_id, $tt_id, $args )
 /**
  * Update folder updatedAt timestamp.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int   $term_id Term ID.
  * @param int   $tt_id   Term taxonomy ID.
@@ -378,7 +378,7 @@ function cr_folder_updated( $term_id, $tt_id, $args )
 /**
  * Trigger parent folder count update after deleting folder.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int     $term_id      Term ID.
  * @param int     $tt_id        Term taxonomy ID.
@@ -400,7 +400,7 @@ function cr_folder_deleted( $term_id, $tt_id, $deleted_term, $object_ids )
 /**
  * Update folder term count based on number of children folders and attachments.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
@@ -454,7 +454,7 @@ function cr_folder_update_count( $terms, $taxonomy )
 /**
  * Recursively delete subfolders and attached files.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param int    $term     Term ID
  * @param string $taxonomy Taxonomy name
@@ -494,7 +494,7 @@ function cr_pre_delete_folder( $term, $taxonomy )
 /**
  * Get path from root to folder.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Term|int $folder folder term or 0 for root folder
  * @return array
@@ -533,7 +533,7 @@ function cr_get_folder_path( $folder )
 /**
  * Get subfolders of parent folder.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Post     $course
  * @param WP_Term|int $parent
@@ -558,7 +558,7 @@ function cr_get_child_folders( $course, $parent )
 /**
  * Get files in parent folder.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Post     $course
  * @param WP_Term|int $parent

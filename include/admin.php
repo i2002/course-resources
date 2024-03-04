@@ -10,7 +10,7 @@ define( 'CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT', 60 ); // 1 minute
 /**
  * Register course resources menu with options submenu.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_register_admin_menu()
 {
@@ -37,7 +37,7 @@ function cr_register_admin_menu()
 /**
  * Register file manager metabox for course post type.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_course_register_metabox()
 {
@@ -69,7 +69,7 @@ function cr_course_register_metabox()
 /**
  * Register plugin settings and fields.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_plugin_options_init()
 {
@@ -173,7 +173,7 @@ function cr_plugin_options_init()
 /**
  * Security section details callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $args  The settings array (title, id, callback)
  */
@@ -185,7 +185,7 @@ function cr_section_security_cb( $args )
 /**
  * Numeric field callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $args field args
  */
@@ -210,7 +210,7 @@ function cr_field_numeric_cb( $args )
 /**
  * Revoke logins action button callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $args field args
  */
@@ -236,7 +236,7 @@ function cr_field_revoke_logins_cb( $args )
 /**
  * Revoke login links button callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $args field args
  */
@@ -262,7 +262,7 @@ function cr_field_revoke_login_links_cb( $args )
 /**
  * Revoke login tokens action callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_action_revoke_login_tokens()
 {
@@ -273,7 +273,7 @@ function cr_action_revoke_login_tokens()
 /**
  * Revoke login links action callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_action_revoke_login_links()
 {
@@ -284,7 +284,7 @@ function cr_action_revoke_login_links()
 /**
  * Render plugin options page callback.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_plugin_options() {
 	if ( ! current_user_can( 'manage_options' ) ) {

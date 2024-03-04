@@ -3,7 +3,7 @@
 /**
  * Register course resources REST API.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_rest_init()
 {
@@ -122,7 +122,7 @@ function cr_rest_get_file_permission( $request )
 /**
  * Get file data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return WP_REST_Response
@@ -141,7 +141,7 @@ function cr_rest_get_file( $request )
 /**
  * Check if user has permissions to upload file.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return bool|WP_Error
@@ -182,7 +182,7 @@ function cr_rest_upload_file_permission( $request )
  *
  * It uploads the file to the server and creates file post data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return WP_REST_Response|WP_Error
@@ -209,7 +209,7 @@ function cr_rest_upload_file( $request )
 /**
  * Check if upload file request required parameters are present and valid.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return bool|WP_Error
@@ -242,7 +242,7 @@ function cr_check_upload_file_params( $request )
 /**
  * Upload file into the correct folder and create file data post.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return array|WP_Error
@@ -328,7 +328,7 @@ function cr_file_uploads_dir( $upload_dir )
  *
  * Send email with login code.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return WP_REST_Response|WP_Error
@@ -401,7 +401,7 @@ function cr_rest_login( $request )
 /**
  * Clear student auth cookie.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return WP_REST_Response
  */
@@ -414,7 +414,7 @@ function cr_rest_logout()
 /**
  * Get logged in student data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return WP_REST_Response|WP_Error
  */
@@ -438,7 +438,7 @@ function cr_rest_user_info()
  *
  * Only logged in students can access their student list.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return bool
  */
@@ -450,7 +450,7 @@ function cr_rest_courses_permission()
 /**
  * Get courses current student is enrolled to.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return WP_REST_Response
  */
@@ -470,7 +470,7 @@ function cr_rest_get_courses()
 /**
  * Check permission to access course data and files.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return bool|WP_Error
@@ -502,7 +502,7 @@ function cr_rest_course_permission( $request )
 /**
  * Get course data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request
  * @return WP_REST_Response
@@ -521,7 +521,7 @@ function cr_rest_get_course( $request )
 /**
  * Get course folder children and path.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Request $request the request object
  * @return WP_REST_Response
@@ -563,7 +563,7 @@ function cr_rest_get_folder_data( $request )
 /**
  * Add source URL and mime type fields to file response.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_REST_Response $response
  * @param WP_Post $file
@@ -631,7 +631,7 @@ function cr_get_parent_folder( $id )
  * - id
  * - name
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Post $course course custom post
  * @return array
@@ -646,7 +646,7 @@ function cr_prepare_course_response( $course ) {
 /**
  * Prepare subfolders data for REST response.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Term[] $subfolders
  * @return array
@@ -676,7 +676,7 @@ function cr_prepare_child_folders_response( $subfolders )
 /**
  * Prepare files data for REST response.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Post[] $files
  * @return array
@@ -702,7 +702,7 @@ function cr_prepare_child_files_response( $files )
  * - fileData (mimeType, size, path)
  * - updatedAt
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param WP_Post $file
  * @return array

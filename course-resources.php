@@ -4,7 +4,7 @@
  * Plugin Name: Course resources
  * Plugin URI: https://www.github.com/i2002/course-resources
  * Description: Manage course files and student access.
- * Version: 0.1.0
+ * Version: 1.0.0
  * Author: Tudor Butufei
  * Author URI: https://www.github.com/i2002/
  * License: MIT
@@ -92,7 +92,7 @@ add_action( 'init', 'cr_frontend_shortcode' );
 /**
  * Load plugin translations.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_load_text_domain()
 {
@@ -102,7 +102,7 @@ function cr_load_text_domain()
 /**
  * Get built assets data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $name the name of the asset bundle (without file extension)
  * @return array with the fields:
@@ -125,7 +125,7 @@ function cr_get_asset_data( $name )
 /**
  * Register vendor assets to be loaded by frontend / backend.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_register_assets()
 {
@@ -137,7 +137,7 @@ function cr_register_assets()
 /**
  * Enqueue admin assets.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_enqueue_admin_assets()
 {
@@ -155,7 +155,7 @@ function cr_enqueue_admin_assets()
 /**
  * Enqueue student interface assets.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_enqueue_frontend_assets()
 {
@@ -170,7 +170,7 @@ function cr_enqueue_frontend_assets()
 /**
  * Register frontend UI shortcode.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 function cr_frontend_shortcode()
 {
@@ -180,7 +180,7 @@ function cr_frontend_shortcode()
 /**
  * Render frontend UI shortcode.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @return string rendered HTML
  */

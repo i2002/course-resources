@@ -3,7 +3,7 @@
 /**
  * Handles an upload via multipart/form-data ($_FILES).
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $files   Data from the `$_FILES` superglobal.
  * @param array $headers HTTP headers from the request.
@@ -64,7 +64,7 @@ function cr_upload_from_file( $files, $headers )
 /**
  * Handles an upload via raw POST data.
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param string $data    Supplied file data.
  * @param array  $headers HTTP headers from the request.
@@ -180,7 +180,7 @@ function cr_upload_from_data( $data, $headers )
  *
  * Replicates check_upload_size().
  *
- * @since 0.1.0
+ * @since 1.0.0
  *
  * @param array $file $_FILES array for a given file.
  * @return true|WP_Error True if can upload, error for errors.
