@@ -426,6 +426,7 @@ function cr_folder_update_count( $terms, $taxonomy )
 		$files = get_posts( array(
 			'post_type' => CR_FILE_TYPE,
 			'nopaging'  => true,
+			'post_status' => 'inherit',
 			'tax_query' => array(
 				array(
 					'taxonomy'         => CR_FOLDER_TAX,
@@ -471,6 +472,7 @@ function cr_pre_delete_folder( $term, $taxonomy )
 		$files = get_posts( array(
 			'post_type'   => CR_FILE_TYPE,
 			'nopaging'    => true,
+			'post_status' => 'inherit',
 			'tax_query'   => array(
 				array(
 					'taxonomy'         => CR_FOLDER_TAX,
@@ -579,6 +581,7 @@ function cr_get_child_files( $course, $parent )
 	$args = array(
 		'post_parent' => $course->ID,
 		'post_type'   => CR_FILE_TYPE,
+		'post_status' => 'inherit',
 		'nopaging'    => true,
 		'orderby'     => 'title',
 		'order'       => 'ASC',
