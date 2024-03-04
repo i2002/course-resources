@@ -34,7 +34,7 @@ function cr_generate_auth_secret( $length = 20 )
 function cr_generate_jwt_token( $user_id, $secret_key )
 {
 	$issued_at = time();
-	$expiration_time = $issued_at + get_option( CR_SETTING_LOGIN_EXP );
+	$expiration_time = $issued_at + get_option( CR_SETTING_LOGIN_EXP, CR_SETTING_LOGIN_EXP_DEFAULT );
 
 	$payload = array(
 		'iat' => $issued_at,
@@ -158,7 +158,7 @@ function cr_is_student_enrolled( $email, $course_id )
 function cr_auth_login( $email )
 {
 	$auth_token = cr_generate_jwt_token( $email, get_option( CR_OPTION_AUTH_SECRET ) );
-	setcookie( CR_AUTH_COOKIE, $auth_token, time() + get_option( CR_SETTING_LOGIN_EXP ) );
+	setcookie( CR_AUTH_COOKIE, $auth_token, time() + get_option( CR_SETTING_LOGIN_EXP, CR_SETTING_LOGIN_EXP_DEFAULT ) );
 }
 
 /**
@@ -192,7 +192,7 @@ function cr_auth_login_request( $email, $redirect_url )
 	}
 
 	// email sending rate limiting
-    if ( $login_token && time() < $login_token['created'] + get_option( CR_SETTING_LOGIN_REQUEST_COOLDOWN ) ) {
+    if ( $login_token && time() < $login_token['created'] + get_option( CR_SETTING_LOGIN_REQUEST_COOLDOWN, CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT ) ) {
 		return new WP_Error( 'cr_auth_email_timeout', __( 'An email has already been sent.', 'course-resources' ), array( 'status' => 429 ) );
 	}
 
@@ -261,6 +261,10 @@ function cr_set_mail_text_body( $phpmailer )
  */
 function cr_magic_link_handler()
 {
+	if ( $_SERVER['REQUEST_METHOD'] !== 'GET' ) {
+		return;
+	}
+
     if ( isset( $_GET['cr_login'] ) && isset( $_GET['code'] ) && isset( $_GET['email'] ) && isset( $_GET['redirect_url'] ) ) {
 		$email = sanitize_email( $_GET['email'] );
 		$token = $_GET['code'];
@@ -380,7 +384,7 @@ function cr_validate_login_link( $login_link, $token )
  */
 function cr_login_link_expired( $login_link )
 {
-	return time() >= $login_link['created'] + get_option( CR_SETTING_LOGIN_LINK_EXP );
+	return time() >= $login_link['created'] + get_option( CR_SETTING_LOGIN_LINK_EXP, CR_SETTING_LOGIN_LINK_EXP_DEFAULT );
 }
 
 /**

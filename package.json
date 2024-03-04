@@ -13,7 +13,7 @@
     "lint:js": "wp-scripts lint-js",
     "composer": "wp-env run cli --env-cwd=wp-content/plugins/course-resources composer",
     "wp-cli": "wp-env run cli --env-cwd=wp-content/plugins/course-resources wp",
-    "i18n:pot": "npm run wp-cli i18n make-pot . lang/course-resources.pot -- --domain=course-resources --include=\"build/frontend.js,build/backend.js,include/,materiale-curs.php\"",
+    "i18n:pot": "npm run wp-cli i18n make-pot . lang/course-resources.pot -- --domain=course-resources --include=\"build/frontend.js,build/backend.js,include/,course-resources.php\"",
     "i18n:json": "npm run wp-cli i18n make-json lang/ -- --no-purge",
     "i18n:mo": "npm run wp-cli i18n make-mo lang/ lang/",
     "test": "echo \"Error: no test specified\" && exit 1"

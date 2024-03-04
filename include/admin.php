@@ -1,8 +1,11 @@
 <?php
 
 define( 'CR_SETTING_LOGIN_EXP', 'cr_login_expiration' );
+define( 'CR_SETTING_LOGIN_EXP_DEFAULT', 30 * 24 * 3600); // 30 days
 define( 'CR_SETTING_LOGIN_LINK_EXP', 'cr_login_link_expiration' );
+define( 'CR_SETTING_LOGIN_LINK_EXP_DEFAULT', 3 * 3600 ); // 3 hours
 define( 'CR_SETTING_LOGIN_REQUEST_COOLDOWN', 'cr_login_request_cooldown' );
+define( 'CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT', 60 ); // 1 minute
 
 /**
  * Register course resources menu with options submenu.
@@ -75,21 +78,21 @@ function cr_plugin_options_init()
 		'type'              => 'integer',
 		'description'       => __( 'Duration in seconds of login token validity', 'course-resources' ),
 		'sanitize_callback' => null,
-		'default'           => 30 * 24 * 3600 // 30 days
+		'default'           => CR_SETTING_LOGIN_EXP_DEFAULT
 	) );
 
 	register_setting( 'cr_options', CR_SETTING_LOGIN_LINK_EXP, array(
 		'type'              => 'integer',
 		'description'       => __( 'Duration in seconds of email login link validity', 'course-resources' ),
 		'sanitize_callback' => null,
-		'default'           => 3 * 3600 // 3 hours
+		'default'           => CR_SETTING_LOGIN_LINK_EXP_DEFAULT
 	) );
 
 	register_setting( 'cr_options', CR_SETTING_LOGIN_REQUEST_COOLDOWN, array(
 		'type'              => 'integer',
 		'description'       => __( 'Duration in seconds before requesting another login email', 'course-resources' ),
 		'sanitize_callback' => null,
-		'default'           => 60 // 1 minute
+		'default'           => CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT
 	) );
 
 	// Register setting sections
@@ -222,7 +225,7 @@ function cr_field_revoke_logins_cb( $args )
 		id="<?php echo esc_attr( $args['label_for'] ); ?>"
 		class="button button-secondary"
 	>
-		Revoke
+		<?php _e( 'Reset', 'course-resources' ) ?>
 	</button>
 	<p class="description">
 		<?php _e( 'Force logout all connected users', 'course-resources' ) ?>
@@ -248,7 +251,7 @@ function cr_field_revoke_login_links_cb( $args )
 		id="<?php echo esc_attr( $args['label_for'] ); ?>"
 		class="button button-secondary"
 	>
-		Revoke
+		<?php _e( 'Reset', 'course-resources' ) ?>
 	</button>
 	<p class="description">
 		<?php _e( 'Invalidate all login emails sent', 'course-resources' ) ?>
