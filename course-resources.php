@@ -24,10 +24,12 @@ define( 'CR_ADMIN_MENU', 'course-resources-admin-menu' );
 // Plugin activation hook
 register_activation_hook( __FILE__, 'cr_plugin_activation' );
 
+add_action( 'cr_clean_login_codes', 'cr_clean_login_codes' );
+
 function cr_plugin_activation()
 {
-	if ( ! wp_next_scheduled( 'cr_clean_login_links' ) ) {
-		wp_schedule_event( time(), 'daily', 'cr_clean_login_links' );
+	if ( ! wp_next_scheduled( 'cr_clean_login_codes' ) ) {
+		wp_schedule_event( time(), 'daily', 'cr_clean_login_codes' );
 	}
 
 	flush_rewrite_rules();
@@ -39,7 +41,7 @@ register_deactivation_hook( __FILE__, 'cr_plugin_deactivation' );
 
 function cr_plugin_deactivation()
 {
-	wp_clear_scheduled_hook( 'cr_clean_login_links' );
+	wp_clear_scheduled_hook( 'cr_clean_login_codes' );
 }
 
 // Load text domain
