@@ -4,6 +4,7 @@ vendor/
 
 # build
 build/
+dist/
 
 # generated translation files
 lang/*.mo
