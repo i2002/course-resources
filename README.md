@@ -1,6 +1,10 @@
 # Course resources
 WordPress plugin to manage student access to course materials.
 
+![Student interface](doc/student-interface.png)
+
+![Admin interface](doc/admin-interface.png)
+
 ## Features
 - Admin interface to upload files and organize them into folders
 - Specify enrolled students email addresses to manage access permissions
