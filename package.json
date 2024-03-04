@@ -1,7 +1,7 @@
 {
   "name": "course-resources",
   "version": "0.1.0",
-  "description": "Wordpress plugin for document management interface",
+  "description": "WordPress plugin to manage student access to course materials",
   "main": "index.js",
   "scripts": {
     "wp-env": "wp-env",
@@ -17,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tudor Butufei",
-  "license": "",
+  "license": "MIT",
   "devDependencies": {
     "@heroicons/react": "^2.1.1",
     "@types/react": "^18.2.47",
