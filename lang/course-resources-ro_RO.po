@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Course resources 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/course-resources\n"
-"POT-Creation-Date: 2024-03-04T17:15:33+00:00\n"
-"PO-Revision-Date: 2024-03-04 19:17+0200\n"
+"POT-Creation-Date: 2024-03-04T20:26:44+00:00\n"
+"PO-Revision-Date: 2024-03-04 22:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -61,8 +61,8 @@ msgid "Duration in seconds of login token validity"
 msgstr "Durata în secunde a validității unui token de login"
 
 #: include/admin.php:86
-msgid "Duration in seconds of email login link validity"
-msgstr "Durata în secunde a validității email-ului de login"
+msgid "Duration in seconds of validation code validity"
+msgstr "Durata în secunde a validității unui cod de verificare"
 
 #: include/admin.php:93
 msgid "Duration in seconds before requesting another login email"
@@ -78,11 +78,11 @@ msgstr "Timp expirare login"
 
 #: include/admin.php:116
 msgid ""
-"How long a session is valid until a new sign in is required (value in "
+"How long is a session remembered untill a new sign in is required (value in "
 "seconds)"
 msgstr ""
-"Valabilitatea unei sesiuni până când este necesară reautentificarea "
-"studentului (durată în secunde)"
+"Cât timp este reținută o sesiune până când este necesară reautentificarea "
+"(durată în secunde)"
 
 #: include/admin.php:122
 msgid "Revoke login tokens"
@@ -93,9 +93,8 @@ msgid "Login email expiration time"
 msgstr "Timp expirare email de autentificare"
 
 #: include/admin.php:140
-msgid "How long is the login email valid (value in seconds)"
-msgstr ""
-"Valabilitatea link-ului de autentificare primit pe email (durată în secunde)"
+msgid "How long is the verificaton code valid (value in seconds)"
+msgstr "Valabilitatea codului de verificare (durată în secunde)"
 
 #: include/admin.php:146
 msgid "Login request cooldown"
@@ -103,9 +102,10 @@ msgstr "Timp între cereri succesive de autentificare"
 
 #: include/admin.php:153
 msgid ""
-"Minimum time between two consecutive login emails sent (value in seconds)"
+"Minimum time between two consecutive verification code emails sent (value in "
+"seconds)"
 msgstr ""
-"Durata de timp minima între două email-uri de autentificare consecutive "
+"Durata de timp minima între două email-uri de verificare trimise consecutiv "
 "către aceeași adresă (valoare în secunde)"
 
 #: include/admin.php:159
@@ -125,8 +125,8 @@ msgid "Force logout all connected users"
 msgstr "Deconectare forțată a tuturor utilizatorilor autentificați"
 
 #: include/admin.php:257
-msgid "Invalidate all login emails sent"
-msgstr "Invalidează toate email-urile de autentificare trimise"
+msgid "Invalidate all verification codes"
+msgstr "Invalidarea tuturor codurilor de verificare"
 
 #: include/admin.php:295
 msgid "Settings updated"
@@ -624,6 +624,12 @@ msgstr "Acces restricționat"
 #: build/frontend.js:2046
 msgid "You are not enrolled to this course."
 msgstr "Nu sunteți înscris la acest curs."
+
+#~ msgid "Duration in seconds of email login link validity"
+#~ msgstr "Durata în secunde a validității email-ului de login"
+
+#~ msgid "Invalidate all login emails sent"
+#~ msgstr "Invalidează toate email-urile de autentificare trimise"
 
 #~ msgid "Login link sent"
 #~ msgstr "Link de verificare trimis"

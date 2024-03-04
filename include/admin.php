@@ -83,7 +83,7 @@ function cr_plugin_options_init()
 
 	register_setting( 'cr_options', CR_SETTING_LOGIN_LINK_EXP, array(
 		'type'              => 'integer',
-		'description'       => __( 'Duration in seconds of email login link validity', 'course-resources' ),
+		'description'       => __( 'Duration in seconds of validation code validity', 'course-resources' ),
 		'sanitize_callback' => null,
 		'default'           => CR_SETTING_LOGIN_LINK_EXP_DEFAULT
 	) );
@@ -113,7 +113,7 @@ function cr_plugin_options_init()
 		array(
 			'label_for'   => 'cr_field_login_expiration',
 			'name'        => CR_SETTING_LOGIN_EXP,
-			'description' => __( 'How long a session is valid until a new sign in is required (value in seconds)', 'course-resources' )
+			'description' => __( 'How long is a session remembered untill a new sign in is required (value in seconds)', 'course-resources' )
 		)
 	);
 
@@ -137,7 +137,7 @@ function cr_plugin_options_init()
 		array(
 			'label_for' => 'cr_field_login_link_expiration',
 			'name' => CR_SETTING_LOGIN_LINK_EXP,
-			'description' => __( 'How long is the login email valid (value in seconds)', 'course-resources' )
+			'description' => __( 'How long is the verificaton code valid (value in seconds)', 'course-resources' )
 		)
 	);
 
@@ -150,7 +150,7 @@ function cr_plugin_options_init()
 		array(
 			'label_for' => 'cr_field_login_request_cooldown',
 			'name' => CR_SETTING_LOGIN_REQUEST_COOLDOWN,
-			'description' => __( 'Minimum time between two consecutive login emails sent (value in seconds)', 'course-resources' )
+			'description' => __( 'Minimum time between two consecutive verification code emails sent (value in seconds)', 'course-resources' )
 		)
 	);
 
@@ -254,7 +254,7 @@ function cr_field_revoke_login_links_cb( $args )
 		<?php _e( 'Reset', 'course-resources' ) ?>
 	</button>
 	<p class="description">
-		<?php _e( 'Invalidate all login emails sent', 'course-resources' ) ?>
+		<?php _e( 'Invalidate all verification codes', 'course-resources' ) ?>
 	</p>
 	<?php
 }
