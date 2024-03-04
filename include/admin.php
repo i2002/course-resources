@@ -277,7 +277,7 @@ function cr_action_revoke_login_tokens()
  */
 function cr_action_revoke_login_links()
 {
-	update_option( CR_AUTH_LINKS_OPTION, array() );
+	update_option( CR_AUTH_CODES_OPTION, array() );
 	wp_safe_redirect( admin_url('admin.php?page=course-resources-admin-menu&settings-updated') );
 }
 

@@ -81,9 +81,6 @@ add_action( 'delete_' . CR_FOLDER_TAX, 'cr_folder_deleted', 10, 4 );
 // Cascade delete
 add_action( 'pre_delete_term', 'cr_pre_delete_folder', 10, 2 );
 
-// Magic link handler
-add_action( 'init', 'cr_magic_link_handler' );
-
 // REST API
 add_action( 'rest_api_init', 'cr_rest_init' );
 
@@ -194,7 +191,7 @@ function cr_frontend_render_shortcode()
 	$hydration_data = array();
 	if ( $student === false ) {
 		if ( current_user_can( 'manage_options' ) ) {
-			cr_auth_login( 'admin' );
+			cr_set_auth_cookie( 'admin' );
 			$student = 'admin';
 		} else {
 			$hydration_data['errors'] = array(

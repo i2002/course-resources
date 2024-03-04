@@ -1,7 +1,7 @@
 import { RouterProvider, createHashRouter } from 'react-router-dom';
 import type { FrontendInitialData } from '../../lib/hydration-types';
 import '../../styles/frontend.css';
-import LoginView from './auth/LoginView';
+import LoginView, { loginAction } from './auth/LoginView';
 import CourseView, { courseLoader } from './course/CourseView';
 import FileView, { fileLoader } from './course/file/FileView';
 import FolderLoading from './course/folder/FolderLoading';
@@ -52,6 +52,7 @@ const paths = [
 	},
 	{
 		path: '/login',
+		action: loginAction,
 		element: <LoginView />,
 	},
 ];

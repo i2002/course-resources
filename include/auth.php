@@ -7,7 +7,7 @@ use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 
 define( 'CR_AUTH_COOKIE', 'student-auth-token' );
-define( 'CR_AUTH_LINKS_OPTION', 'cr_magic_links' );
+define( 'CR_AUTH_CODES_OPTION', 'cr_login_codes' );
 define( 'CR_JWT_KEY_ALG', 'HS256' );
 define( 'CR_OPTION_AUTH_SECRET', 'cr_auth_secret' );
 
@@ -149,13 +149,35 @@ function cr_is_student_enrolled( $email, $course_id )
 }
 
 /**
- * Create student auth cookie.
+ * Verify login using code.
+ *
+ * @since 0.1.0
+ *
+ * @param string $email
+ * @param string $code   login code
+ * @return bool|WP_Error true on success or WP_Error
+ */
+function cr_auth_login( $email, $code )
+{
+	$login_code = cr_get_login_code( $email );
+
+	if ( $code && cr_validate_login_code( $login_code, $code ) ) {
+		cr_unset_login_code( $email );
+		cr_set_auth_cookie( $email );
+		return true;
+	}
+
+	return new WP_Error( 'cr_invalid_auth_code', __( 'Invalid user login code', 'course-resources' ), array( 'state' => 401 ) );
+}
+
+/**
+ * Set user auth cookie.
  *
  * @since 0.1.0
  *
  * @param string $email
  */
-function cr_auth_login( $email )
+function cr_set_auth_cookie( $email )
 {
 	$auth_token = cr_generate_jwt_token( $email, get_option( CR_OPTION_AUTH_SECRET ) );
 	setcookie( CR_AUTH_COOKIE, $auth_token, time() + get_option( CR_SETTING_LOGIN_EXP, CR_SETTING_LOGIN_EXP_DEFAULT ) );
@@ -178,31 +200,37 @@ function cr_auth_logout()
  *
  * @since 0.1.0
  *
- * @param string $email        user email
- * @param string $redirect_url url to redirect to after successful login
+ * @param string $email   user email
+ * @param bool   $resend  whether to resend login code if another one still active
  * @return bool|WP_Error true if the email has been sent successfully, error if not
  */
-function cr_auth_login_request( $email, $redirect_url )
+function cr_auth_login_request( $email, $resend )
 {
-	$login_token = cr_get_login_link( $email );
+	$login_code = cr_get_login_code( $email );
 
 	// check if email is enrolled to any course
 	if ( ! cr_get_student_courses( $email ) ) {
 		return new WP_Error( 'cr_auth_access_denied', __( 'The provided email address is not enrolled in any course.', 'course-resources' ), array( 'status' => 401 ) );
 	}
 
-	// email sending rate limiting
-    if ( $login_token && time() < $login_token['created'] + get_option( CR_SETTING_LOGIN_REQUEST_COOLDOWN, CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT ) ) {
-		return new WP_Error( 'cr_auth_email_timeout', __( 'An email has already been sent.', 'course-resources' ), array( 'status' => 429 ) );
+	// valid code exists
+	if ( $login_code && ! cr_login_code_expired( $login_code ) ) {
+		if ( ! $resend ) {
+			// do not resend if active code exists
+			return true;
+		} else if ( time() < $login_code['created'] + get_option( CR_SETTING_LOGIN_REQUEST_COOLDOWN, CR_SETTING_LOGIN_REQUEST_COOLDOWN_DEFAULT ) ) {
+			// email sending cooldown
+			return new WP_Error( 'cr_auth_email_timeout', __( 'An email has already been sent.', 'course-resources' ), array( 'status' => 429 ) );
+		}
 	}
 
-	$magic_link_token = cr_create_login_link( $email );
+	$code = cr_create_login_code( $email );
 
-	$ret = cr_send_auth_link( $email, $redirect_url, $magic_link_token );
+	$ret = cr_send_auth_code( $email, $code );
 
 	// sending error
 	if ( ! $ret ) {
-		cr_unset_login_link( $email );
+		cr_unset_login_code( $email );
 		return new WP_Error( 'cr_auth_email_error', __( 'Failed to send email. Please try again later.', 'course-resources' ), array( 'status' => 503 ) );
 	}
 
@@ -210,28 +238,25 @@ function cr_auth_login_request( $email, $redirect_url )
 }
 
 /**
- * Send email with login link to specified user.
+ * Send email with login code to specified user.
  *
  * @since 0.1.0
  *
- * @param string $email the     receiver email
- * @param string $redirect_url  url to redirect to after successful login
- * @param string $token magic   link token generated for sign in request
+ * @param string $email the  receiver email
+ * @param string $code       login code generated for sign in request
  * @return bool whether the email was sent successfully or not
  */
-function cr_send_auth_link( $email, $redirect_url, $token )
+function cr_send_auth_code( $email, $code )
 {
-	$login_url = get_site_url() . "?cr_login&code=$token&email=$email&redirect_url=$redirect_url";
-
 	$subject = __( 'Sign in to Course resources requested', 'course-resources' );
 	$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 	$message =
-		'<p>' . __( 'Hello,', 'course-resources' ) . '</p>' .
-		'<p>' . __( 'We received a request to sign in to Course resources using this email address.', 'course-resources' ) . '</p>' .
+		'<p>' . __( 'Hello,', 'course-resources' ) . "</p>\n" .
+		'<p>' . __( 'We received a request to sign in to Course resources using this email address.', 'course-resources' ) . "</p>\n" .
 		/* translators: %s: User email address */
-		'<p>' . sprintf( __( 'If you want to sign in with your %s account, click this link:', 'course-resources' ), $email ) . '</p>' .
-		'<p><a href="' . $login_url . '">' . $login_url . '</a></p>' .
-		'<p>' . __( 'If you did not request this link, you can safely ignore this email.', 'course-resources' ) . '</p>';
+		'<p>' . sprintf( __( 'If you want to sign in with your %s account, use this code:', 'course-resources' ), $email ) . "</p>\n" .
+		'<p><strong>' . $code . "</strong></p>\n" .
+		'<p>' . __( 'If you did not request this, you can safely ignore this email.', 'course-resources' ) . "</p>\n";
 
 	add_action( 'phpmailer_init','cr_set_mail_text_body' );
 	$ret = wp_mail( $email, $subject, $message, $headers );
@@ -254,152 +279,121 @@ function cr_set_mail_text_body( $phpmailer )
 }
 
 /**
- * Handle magic link requests.
- * Checks if the token is valid and redirects user to app page.
- *
- * @since 0.1.0
- */
-function cr_magic_link_handler()
-{
-	if ( $_SERVER['REQUEST_METHOD'] !== 'GET' ) {
-		return;
-	}
-
-    if ( isset( $_GET['cr_login'] ) && isset( $_GET['code'] ) && isset( $_GET['email'] ) && isset( $_GET['redirect_url'] ) ) {
-		$email = sanitize_email( $_GET['email'] );
-		$token = $_GET['code'];
-		$redirect_url = sanitize_url( $_GET['redirect_url'] );
-
-		$login_token = cr_get_login_link( $email );
-
-		if ( $login_token && cr_validate_login_link( $login_token, $token ) ) {
-			cr_auth_login( $email );
-			cr_unset_login_link( $email );
-		} else {
-			$redirect_url .= '#/login?error=invalid_code';
-		}
-
-		wp_redirect( get_site_url() . $redirect_url );
-		exit;
-    }
-}
-
-/**
- * Get the login token associated with email.
+ * Get the login code associated with email.
  *
  * @since 0.1.0
  *
  * @param string $email
- * @return array|false returns the login token data if it exists, false otherwise
+ * @return array|false returns the login code data if it exists, false otherwise
  */
-function cr_get_login_link( $email )
+function cr_get_login_code( $email )
 {
-	$login_links = get_option( CR_AUTH_LINKS_OPTION, array() );
+	$login_codes = get_option( CR_AUTH_CODES_OPTION, array() );
 
-	if ( ! key_exists( $email, $login_links ) ) {
+	if ( ! key_exists( $email, $login_codes ) ) {
 		return false;
 	}
 
-	return $login_links[$email];
+	return $login_codes[$email];
 }
 
 /**
- * Create and register login link associated with email.
+ * Create and register login code associated with email.
  *
  * @since 0.1.0
  *
  * @param string $email
- * @return string the login token generated
+ * @return string the login code generated
  */
-function cr_create_login_link( $email )
+function cr_create_login_code( $email )
 {
-	$login_links = get_option( CR_AUTH_LINKS_OPTION, array() );
+	$login_codes = get_option( CR_AUTH_CODES_OPTION, array() );
 
-	$magic_link_token = cr_generate_magic_link_token();
+	$code = cr_generate_login_code();
 
-	$login_links[$email] = array(
-		'token' => $magic_link_token,
+	$login_codes[$email] = array(
+		'code' => $code,
 		'created' => time()
 	);
 
-	update_option( CR_AUTH_LINKS_OPTION, $login_links );
+	update_option( CR_AUTH_CODES_OPTION, $login_codes );
 
-	return $magic_link_token;
+	return $code;
 }
 
 /**
- * Unset login link associated with email.
+ * Unset login code associated with email.
  *
  * @since 0.1.0
  *
  * @param string $email
  */
-function cr_unset_login_link( $email )
+function cr_unset_login_code( $email )
 {
-	$login_links = get_option( CR_AUTH_LINKS_OPTION, array() );
+	$login_codes = get_option( CR_AUTH_CODES_OPTION, array() );
 
-	if ( key_exists( $email, $login_links ) ) {
-		unset( $login_links[$email] );
-		update_option( CR_AUTH_LINKS_OPTION, $login_links );
+	if ( key_exists( $email, $login_codes ) ) {
+		unset( $login_codes[$email] );
+		update_option( CR_AUTH_CODES_OPTION, $login_codes );
 	}
 }
 
 /**
- * Clear expired login links.
+ * Clear expired login codes.
  *
  * @since 0.1.0
  */
-function cr_clean_login_links()
+function cr_clean_login_codes()
 {
-	$login_links = get_option( CR_AUTH_LINKS_OPTION, array() );
+	$login_codes = get_option( CR_AUTH_CODES_OPTION, array() );
 
-	$login_links = array_filter( $login_links, function( $login_link ) {
-		return ! cr_login_link_expired( $login_link );
+	$login_codes = array_filter( $login_codes, function( $login_code ) {
+		return ! cr_login_code_expired( $login_code );
 	} );
 
-	update_option( CR_AUTH_LINKS_OPTION, $login_links );
+	update_option( CR_AUTH_CODES_OPTION, $login_codes );
 }
 
 /**
- * Check if login link is valid.
+ * Check if login code is valid.
  *
  * @since 0.1.0
  *
- * @param array  $login_link  stored login link data
- * @param string $token       token sent in the request params
+ * @param array  $login_code  stored login code data
+ * @param string $code        code sent in the request params
  * @return bool
  */
-function cr_validate_login_link( $login_link, $token )
+function cr_validate_login_code( $login_code, $code )
 {
-	return $login_link['token'] === $token && ! cr_login_link_expired( $login_link );
+	return $login_code['code'] === $code && ! cr_login_code_expired( $login_code );
 }
 
 /**
- * Check if login link has expired.
+ * Check if login code has expired.
  *
  * @since 0.1.0
  *
- * @param array $login_link  login link data
+ * @param array $login_code  login code data
  * @return bool
  */
-function cr_login_link_expired( $login_link )
+function cr_login_code_expired( $login_code )
 {
-	return time() >= $login_link['created'] + get_option( CR_SETTING_LOGIN_LINK_EXP, CR_SETTING_LOGIN_LINK_EXP_DEFAULT );
+	return time() >= $login_code['created'] + get_option( CR_SETTING_LOGIN_LINK_EXP, CR_SETTING_LOGIN_LINK_EXP_DEFAULT );
 }
 
 /**
- * Generate base64 url random token.
+ * Generate login code
  *
  * @since 0.1.0
  *
- * @param int $length initial random token length (before base64 encode)
+ * @param int $length code length
  * @return int
  */
-function cr_generate_magic_link_token( $length = 20 )
+function cr_generate_login_code( $length = 6 )
 {
-	// generate random token
-	$randomToken = bin2hex( random_bytes( $length ) );
+	// generate random code
+	$randomCode = bin2hex( random_bytes( $length ) );
+	$randomCode = substr( $randomCode, 0, $length );
 
-	// base64 encode url
-	return str_replace( ['+', '/', '='], ['-', '_', ''], base64_encode( $randomToken ) );
+	return $randomCode;
 }

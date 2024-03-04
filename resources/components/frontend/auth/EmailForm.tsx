@@ -1,55 +1,11 @@
-import apiFetch from '@wordpress/api-fetch';
-import { useContext, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LoginContext } from './LoginContext';
-
-type LoginResponse = {
-	success: true;
-	code: string;
-};
+import { Form, useNavigation } from 'react-router-dom';
 
 export default function EmailForm() {
-	const [loading, setLoading] = useState(false);
-	const {
-		state: { callbackUrl },
-		dispatch,
-	} = useContext(LoginContext);
-	const navigate = useNavigate();
-	const emailRef = useRef<HTMLInputElement>(null);
-
-	const onSubmit = async (e: FormEvent) => {
-		e.preventDefault();
-		const email = emailRef.current?.value ?? '';
-
-		try {
-			setLoading(true);
-			dispatch({ type: 'messageReset' });
-
-			const res = await apiFetch<LoginResponse>({
-				path: '/course-resources/v1/login',
-				method: 'POST',
-				data: {
-					email,
-					callbackUrl,
-				},
-			});
-
-			if (res.code === 'email_sent') {
-				dispatch({ type: 'messageEmail', text: email });
-			} else if (res.code === 'already_signedin') {
-				navigate('/');
-			}
-		} catch (error: any) {
-			dispatch({ type: 'messageErrorCode', text: error.code });
-		}
-
-		setLoading(false);
-	};
+	const { state } = useNavigation();
 
 	return (
-		<form onSubmit={onSubmit} className="tw-w-full">
+		<Form method="post" className="tw-w-full">
 			<div className="tw-mb-6">
 				<input
 					required
@@ -57,17 +13,18 @@ export default function EmailForm() {
 					name="email"
 					placeholder={__('Email address', 'course-resources')}
 					className="tw-form-input"
-					ref={emailRef}
-					disabled={loading}
+					disabled={state !== 'idle'}
 				/>
 			</div>
 			<button
 				className="tw-button-primary tw-w-full tw-py-2"
-				disabled={loading}
+				disabled={state !== 'idle'}
 				type="submit"
+				name="intent"
+				value="login_request"
 			>
 				{__('Login with email address', 'course-resources')}
 			</button>
-		</form>
+		</Form>
 	);
 }

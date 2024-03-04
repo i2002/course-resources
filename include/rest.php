@@ -8,6 +8,12 @@
 function cr_rest_init()
 {
 	// Auth routes
+	register_rest_route( 'course-resources/v1', '/login-request', array(
+		'methods'             => 'POST',
+		'callback'            => 'cr_rest_login_request',
+		'permission_callback' => '__return_true'
+	) );
+
 	register_rest_route( 'course-resources/v1', '/login', array(
 		'methods'             => 'POST',
 		'callback'            => 'cr_rest_login',
@@ -320,23 +326,27 @@ function cr_file_uploads_dir( $upload_dir )
 /**
  * Login student request.
  *
- * Send email with login link.
+ * Send email with login code.
  *
  * @since 0.1.0
  *
  * @param WP_REST_Request $request
  * @return WP_REST_Response|WP_Error
  */
-function cr_rest_login( $request )
+function cr_rest_login_request( $request )
 {
-	if ( ! isset( $request['email'] ) || ! isset( $request['callbackUrl'] ) ) {
+	if ( ! isset( $request['email'] ) ) {
 		return new WP_Error( 'cr_rest_auth_bad_request', __( 'Bad request', 'course-resources'), array( 'status' => 400 ) );
 	}
 
 	$email = sanitize_email( $request['email'] );
-	$redirect_url = sanitize_url( $request['callbackUrl'] );
+	$resend = false;
 
-	if ( $email === '' || ! is_email( $email ) || $redirect_url === '' ) {
+	if ( isset( $request['resend'] ) ) {
+		$resend = $request['resend'];
+	}
+
+	if ( $email === '' || ! is_email( $email ) ) {
 		return new WP_Error( 'cr_rest_auth_bad_request', __( 'Email invalid', 'course-resources' ), array( 'status' => 400 ) );
 	}
 
@@ -349,7 +359,7 @@ function cr_rest_login( $request )
 	}
 
 	// send email with login link
-	$ret = cr_auth_login_request( $email, $redirect_url );
+	$ret = cr_auth_login_request( $email, $resend );
 
 	if ( is_wp_error( $ret ) ) {
 		return $ret;
@@ -358,6 +368,33 @@ function cr_rest_login( $request )
 	return rest_ensure_response( array(
 		'success' => true,
 		'code' => 'email_sent'
+	) );
+}
+
+/**
+ * Verify student login with email code.
+ *
+ * @param WP_REST_Request $request
+ * @return WP_REST_Response|WP_Error
+ */
+function cr_rest_login( $request )
+{
+	if ( ! isset( $request['email'] ) || ! isset( $request['code'] ) ) {
+		return new WP_Error( 'cr_rest_auth_bad_request', __( 'Bad request', 'course-resources'), array( 'status' => 400 ) );
+	}
+
+	$email = sanitize_email( $request['email'] );
+	$code = $request['code'];
+
+	$logged_in = cr_auth_login( $email, $code );
+
+	if ( is_wp_error( $logged_in ) ) {
+		return $logged_in;
+	}
+
+	return rest_ensure_response( array(
+		'success' => true,
+		'code' => 'login_success'
 	) );
 }
 

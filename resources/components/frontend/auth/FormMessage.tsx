@@ -1,21 +1,65 @@
-import { useContext } from '@wordpress/element';
-import { LoginContext } from './LoginContext';
+import { __ } from '@wordpress/i18n';
+import { useActionData } from 'react-router-dom';
+import Callout from '../../common/ui/Callout';
+
+export type LoginFormMessage = {
+	messageTitle: string;
+	message: string;
+	messageType: 'info' | 'error';
+};
+
+export function formatErrorMessage(
+	action: 'messageErrorCode' | 'messageError',
+	text: string
+): LoginFormMessage {
+	switch (action) {
+		case 'messageErrorCode':
+			return {
+				messageTitle: __('Login failed', 'course-resources'),
+				message: getErrorCodeMessage(text),
+				messageType: 'error',
+			};
+
+		case 'messageError':
+			return {
+				messageTitle: __('Login failed', 'course-resources'),
+				message: text,
+				messageType: 'error',
+			};
+	}
+}
+
+const getErrorCodeMessage = (errorCode: string) => {
+	switch (errorCode) {
+		case 'cr_auth_email_timeout':
+			return __(
+				"An email has already been sent to the specified email address. If you didn't receive the email try again in a minute.",
+				'course-resources'
+			);
+		case 'cr_auth_email_error':
+			return __("The login email couldn't be sent.", 'course-resources');
+		case 'cr_auth_access_denied':
+			return __(
+				'The email address is not enrolled in any course.',
+				'course-resources'
+			);
+		case 'cr_invalid_auth_code':
+			return __('Invalid login code.', 'course-resources');
+		default:
+			return __(
+				'Internal server error while logging in.',
+				'course-resources'
+			);
+	}
+};
 
 export default function FormMessage() {
-	const {
-		state: { messageTitle, message, messageType },
-	} = useContext(LoginContext);
+	const data = useActionData() as { errors?: LoginFormMessage } | undefined;
+	const errors = data?.errors;
 
-	return message ? (
-		<div
-			className={`tw-mb-4 tw-flex tw-flex-col tw-overflow-hidden tw-rounded-md tw-text-sm tw-border-l-4 tw-py-3 tw-pr-3 tw-pl-4 tw-bg-opacity-10 ${messageType === 'error' ? 'tw-bg-rose-500 tw-border-rose-700 tw-text-rose-700' : 'tw-bg-teal-500 tw-border-teal-700 tw-text-teal-700'}`}
-			title={messageTitle}
-			color={messageType === 'error' ? 'rose' : 'teal'}
-		>
-			<div className="tw-flex tw-items-start">
-				<h4 className="tw-font-semibold">{messageTitle}</h4>
-			</div>
-			<p className="tw-overflow-y-auto tw-mt-2">{message}</p>
-		</div>
+	return errors ? (
+		<Callout title={errors.messageTitle} type={errors.messageType}>
+			{errors.message}
+		</Callout>
 	) : null;
 }
