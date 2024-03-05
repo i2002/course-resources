@@ -28,3 +28,31 @@ The student accounts are not WordPress accounts and do not have permissions to a
 The authentication processs uses encrypted _JWT Tokens_, which is the standard way to make authenticated requests for single page applications.
 
 The login flow involves the student entering his or her email address and receiving an email with a single use verification code to complete the authentication process.
+
+## Development
+
+This project uses [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to create a WordPress development environment inside a Docker container.
+
+### Start environment
+To start the container with XDebug support:
+
+```
+$ npm run wp-env start -- --xdebug
+```
+
+### Start webpack development build
+```
+$ npm run start
+```
+
+### Generate translation strings
+```
+$ npm run i18n:pot
+```
+
+### Production build
+```
+$ npm run i18n:mo
+$ npm run i18n:json
+$ npm run dist
+```
