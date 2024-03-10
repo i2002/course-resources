@@ -33,6 +33,25 @@ The login flow involves the student entering his or her email address and receiv
 
 This project uses [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to create a WordPress development environment inside a Docker container.
 
+### Requirements
+
+- `docker` and `docker-compose` installed and running
+- NodeJs and npm
+
+### Setup
+
+Install dependencies:
+
+```
+$ npm install
+```
+
+After initial wp-env startup, install composer dependencies:
+
+```
+$ npm run composer install
+```
+
 ### Start environment
 To start the container with XDebug support:
 
